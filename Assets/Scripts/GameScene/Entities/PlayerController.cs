@@ -16,6 +16,7 @@ public class PlayerController : MonoBehaviour
 
 	private Vector2 targetVelocity;
 	private float moveSpeed = startMoveSpeed;
+	private bool jumped = false;
 
 	private SwordEntity justThrownSword;
 
@@ -56,13 +57,19 @@ public class PlayerController : MonoBehaviour
 
 		if (connectedInput.PressedJump())
 		{
-			targetVelocity = new Vector2(targetVelocity.x, moveSpeed * 2.0f);
+			jumped = true;
 		}
 	}
 
 	// Every physics frame, set the velocity to target velocity.
 	private void FixedUpdate()
 	{
+		if(jumped)
+		{
+			targetVelocity = new Vector2(targetVelocity.x, moveSpeed * 2.0f);
+			jumped = false;
+		}
+
 		rigidbody.velocity = targetVelocity;
 	}
 

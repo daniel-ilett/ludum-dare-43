@@ -2,15 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InputRemap : MonoBehaviour {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
+public class InputRemap : MonoBehaviour
+{
+	public void SetPlayerReady()
+	{
+		Debug.Log("Player is ready");
 	}
 }

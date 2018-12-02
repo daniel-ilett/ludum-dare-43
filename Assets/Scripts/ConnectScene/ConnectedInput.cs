@@ -10,7 +10,7 @@ public class ConnectedInput : MonoBehaviour
 
 	private Dictionary<InputName, string> inputMap;
 
-	private InputRemap remapper;
+	public InputRemap remapper { get; private set; }
 
 	private bool playing = false;
 
@@ -22,6 +22,8 @@ public class ConnectedInput : MonoBehaviour
 	// Set the kind of controller this input is.
 	public void SetConnType(ConnectionType type, int joystickID, InputRemap remapper, int playerID)
 	{
+		Debug.Log("Connected - type is " + type.ToString() + ", joystick ID is " + joystickID + ", playerID is " + playerID);
+
 		connType = type;
 		this.playerID = playerID;
 		this.remapper = remapper;
@@ -49,6 +51,12 @@ public class ConnectedInput : MonoBehaviour
 				{ InputName.MOVE_Y, "K_MoveVertical" },
 			};
 		}
+	}
+
+	// Return the playerID.
+	public int GetPlayerID()
+	{
+		return playerID;
 	}
 
 	// Return true when we pressed Jump.
