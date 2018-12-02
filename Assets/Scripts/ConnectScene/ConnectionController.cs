@@ -1,24 +1,35 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
 public class ConnectionController : MonoBehaviour
 {
 	[SerializeField]
-	private ConnectedInput inputPrefab;
+	private Text headerText;
 
 	[SerializeField]
+	private ConnectedInput inputPrefab;
+	
+	[SerializeField]
+	private InputRemap remapperPrefab;
+
+	[SerializeField]
+	private Transform remapperRoot;
+
 	private List<InputRemap> remappers;
 
 	private int playersConnected = 0;
 
-	private const int maxPlayerCount = 2;
+	private const int maxPlayerCount = 8;
 
 	private List<int> connectedControllerIDs;
 	private bool keyboardConnected;
 
 	private Dictionary<int, bool> accepted;
+
+	private bool isLoadingGame = false;
 
 	public static List<ConnectedInput> connectedInputs;
 	public static ConnectionController instance;
@@ -35,6 +46,15 @@ public class ConnectionController : MonoBehaviour
 		connectedInputs = new List<ConnectedInput>();
 		connectedControllerIDs = new List<int>();
 		accepted = new Dictionary<int, bool>();
+		remappers = new List<InputRemap>();
+
+		for(int i = 0; i < maxPlayerCount; ++i)
+		{
+			var newRemapper = Instantiate(remapperPrefab, remapperRoot);
+			newRemapper.SetPlayerNumber(i + 1);
+
+			remappers.Add(newRemapper);
+		}
 	}
 
 	private void Update()
@@ -62,48 +82,69 @@ public class ConnectionController : MonoBehaviour
 		}
 		*/
 
-		// If a connected player presses Jump, they are ready to play.
-		foreach (var connectedInput in connectedInputs)
+		if(!isLoadingGame)
 		{
-			if (accepted[connectedInput.GetPlayerID()] == false && 
-				connectedInput.PressedJump())
+			// If a connected player presses Jump, they are ready to play.
+			foreach (var connectedInput in connectedInputs)
 			{
-				accepted[connectedInput.GetPlayerID()] = true;
-				connectedInput.remapper.SetPlayerReady();
-			}
-		}
-
-		// Attempt to connect new controllers.
-		if (playersConnected < maxPlayerCount)
-		{
-			if (Input.GetButtonDown("K_Jump"))
-			{
-				AddKeyboard();
-			}
-
-			if (Input.GetButtonDown("J1_Jump"))
-			{
-				AddController(1);
-			}
-
-			if (Input.GetButtonDown("J2_Jump"))
-			{
-				AddController(2);
-			}
-		}
-
-		if(accepted.Count > 0)
-		{
-			foreach(var value in accepted.Values)
-			{
-				if(value == false)
+				if (accepted[connectedInput.GetPlayerID()] == false &&
+					connectedInput.PressedJump())
 				{
-					return;
+					accepted[connectedInput.GetPlayerID()] = true;
+					connectedInput.remapper.SetPlayerReady();
 				}
 			}
 
-			SceneManager.LoadScene("sc_GameScene");
+			// Attempt to connect new controllers.
+			if (playersConnected < maxPlayerCount)
+			{
+				if (Input.GetButtonDown("K_Jump"))
+				{
+					AddKeyboard();
+				}
+
+				if (Input.GetButtonDown("J1_Jump"))
+				{
+					AddController(1);
+				}
+
+				if (Input.GetButtonDown("J2_Jump"))
+				{
+					AddController(2);
+				}
+			}
+
+			if (accepted.Count > 0)
+			{
+				foreach (var value in accepted.Values)
+				{
+					if (value == false)
+					{
+						return;
+					}
+				}
+
+				StartCoroutine(LoadGame());
+			}
 		}
+	}
+
+	// Load the game with a nice countdown.
+	private IEnumerator LoadGame()
+	{
+		isLoadingGame = true;
+
+		int count = 3;
+		var wait = new WaitForSeconds(1.0f);
+
+		while(count > 0)
+		{
+			headerText.text = "Everyone is ready - starting in " + count.ToString() + "...";
+			--count;
+			yield return wait;
+		}
+
+		SceneManager.LoadScene("sc_GameScene");
 	}
 
 	// Add the keyboard if not already added.
@@ -113,6 +154,7 @@ public class ConnectionController : MonoBehaviour
 		{
 			var input = Instantiate(inputPrefab, Vector3.zero, Quaternion.identity);
 			input.SetConnType(ConnectionType.KEYBOARD, 0, remappers[playersConnected], ++playersConnected);
+			remappers[playersConnected - 1].SetPlayerConnected();
 
 			accepted.Add(playersConnected, false);
 			connectedInputs.Add(input);
@@ -128,6 +170,7 @@ public class ConnectionController : MonoBehaviour
 		{
 			var input = Instantiate(inputPrefab, Vector3.zero, Quaternion.identity);
 			input.SetConnType(ConnectionType.CONTROLLER, joystickID, remappers[playersConnected], ++playersConnected);
+			remappers[playersConnected - 1].SetPlayerConnected();
 
 			accepted.Add(playersConnected, false);
 			connectedInputs.Add(input);
