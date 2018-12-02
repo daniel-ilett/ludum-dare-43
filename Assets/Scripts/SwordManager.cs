@@ -13,6 +13,12 @@ public class SwordManager : MonoBehaviour
 	[SerializeField]
 	private List<Sprite> swordSprites;
 
+	[SerializeField]
+	private Collider2D spawnVolume;
+
+	private bool shouldSpawn = true;
+	private Coroutine spawnRoutine = null;
+
 	public static SwordManager instance { get; private set; }
 
 	private void Awake()
@@ -25,6 +31,8 @@ public class SwordManager : MonoBehaviour
 		else
 		{
 			instance = this;
+
+			spawnRoutine = StartCoroutine(SpawnLoop());
 		}
 	}
 
@@ -43,9 +51,33 @@ public class SwordManager : MonoBehaviour
 	// Create a sword to add to the world.
 	private void SpawnSword()
 	{
-		var position = Vector3.zero;
-		var rotation = Quaternion.identity;
+		var bounds = spawnVolume.bounds;
+		var position = new Vector2(Random.Range(bounds.min.x, bounds.max.x), 
+			Random.Range(bounds.min.y, bounds.max.y));
+		var rotation = Quaternion.Euler(0.0f, 0.0f, 180.0f + Random.Range(-30.0f, 30.0f));
 
 		var newSword = CreateSword(position, rotation);
+
+		var newSprite = swordSprites[Random.Range(0, swordSprites.Count)];
+		newSword.SetSprite(newSprite);
+		newSword.Throw();
+	}
+
+	// Maintain a loop of spawning a sword every few seconds.
+	private IEnumerator SpawnLoop()
+	{
+		var wait = new WaitForSeconds(2.0f);
+
+		while (shouldSpawn)
+		{
+			SpawnSword();
+			yield return wait;
+		}
+	}
+
+	// Stop the sword-spawning loop when the object is destroyed.
+	private void OnDestroy()
+	{
+		shouldSpawn = false;
 	}
 }
