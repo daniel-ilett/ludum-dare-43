@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
 		}
 		else
 		{
-			Quaternion holdRotation = Quaternion.Euler(0.0f, 0.0f, 180.0f + UnityEngine.Random.Range(-15.0f, 5.0f));
+			Quaternion holdRotation = Quaternion.Euler(0.0f, 0.0f, 180.0f + UnityEngine.Random.Range(-30.0f, 15.0f));
 			var newHeldSword = SwordManager.instance.CreateHeldSword(heldSwordsRoot, holdRotation);
 			newHeldSword.sprite = sword.GetSprite();
 
