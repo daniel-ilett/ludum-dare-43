@@ -112,6 +112,36 @@ public class ConnectionController : MonoBehaviour
 				{
 					AddController(2);
 				}
+
+				if (Input.GetButtonDown("J3_Jump"))
+				{
+					AddController(3);
+				}
+
+				if (Input.GetButtonDown("J4_Jump"))
+				{
+					AddController(4);
+				}
+
+				if (Input.GetButtonDown("J5_Jump"))
+				{
+					AddController(5);
+				}
+
+				if (Input.GetButtonDown("J6_Jump"))
+				{
+					AddController(6);
+				}
+
+				if (Input.GetButtonDown("J7_Jump"))
+				{
+					AddController(7);
+				}
+
+				if (Input.GetButtonDown("J8_Jump"))
+				{
+					AddController(8);
+				}
 			}
 
 			if (accepted.Count > 0)
