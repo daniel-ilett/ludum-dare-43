@@ -5,17 +5,16 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody2D))]
 public class SwordEntity : MonoBehaviour
 {
-	[SerializeField]
-	private SpriteRenderer spriteRenderer;
-
 	private bool settled = false;
 
 	private new Rigidbody2D rigidbody;
+	private new SpriteRenderer renderer;
 
 	private void Awake()
 	{
 		// Set component properties.
 		rigidbody = GetComponent<Rigidbody2D>();
+		renderer = GetComponent<SpriteRenderer>();
 	}
 
 	private void OnTriggerEnter2D(Collider2D other)
@@ -46,6 +45,7 @@ public class SwordEntity : MonoBehaviour
 				return;
 			default:
 				{
+					// Stick into level geometry.
 					StartCoroutine(StickIntoGeometry());
 				}
 				break;
@@ -71,13 +71,13 @@ public class SwordEntity : MonoBehaviour
 	// Get child object's sword sprite.
 	public Sprite GetSprite()
 	{
-		return spriteRenderer.sprite;
+		return renderer.sprite;
 	}
 
 	// Set child gameObject's sword sprite.
 	public void SetSprite(Sprite sprite)
 	{
-		spriteRenderer.sprite = sprite;
+		renderer.sprite = sprite;
 	}
 
 	// Give the sword a large velocity forwards and set gravity in 0.5s.
@@ -90,6 +90,7 @@ public class SwordEntity : MonoBehaviour
 		StartCoroutine(SetGravityActive());
 	}
 
+	// Move the sword forward slowly into the scene geometry.
 	private IEnumerator StickIntoGeometry()
 	{
 		settled = true;
@@ -102,5 +103,11 @@ public class SwordEntity : MonoBehaviour
 			transform.position += direction * Time.deltaTime;
 			yield return null;
 		}
+	}
+
+	// Destroy the sword and remove it from the game.
+	public void DestroySword()
+	{
+		Destroy(gameObject);
 	}
 }

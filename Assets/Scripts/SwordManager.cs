@@ -17,7 +17,7 @@ public class SwordManager : MonoBehaviour
 
 	private void Awake()
 	{
-		// MAke this class a singleton instance of SwordManager.
+		// Make this class a singleton instance of SwordManager.
 		if(instance != null)
 		{
 			Destroy(gameObject);

@@ -120,6 +120,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	// Fire an event whenever the sword count changes.
 	private void OnSwordCountChanged(SwordCountChangedEventArgs e)
 	{
 		EventHandler<SwordCountChangedEventArgs> handler = SwordCountChanged;
@@ -142,6 +143,7 @@ public class PlayerController : MonoBehaviour
 		justThrownSword = null;
 	}
 
+	// Apply damage to the player.
 	public void GetHitBySword(SwordEntity sword)
 	{
 		// Only get hit by swords we didn't just throw.
@@ -149,6 +151,12 @@ public class PlayerController : MonoBehaviour
 		{
 
 		}
+	}
+
+	// Instantly kill the player.
+	public void KillPlayer()
+	{
+		Debug.Log("Killed player");
 	}
 }
 
