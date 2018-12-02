@@ -12,6 +12,8 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private Transform heldSwordsRoot;
 
+	public ConnectedInput connectedInput { private get; set; }
+
 	private Vector2 targetVelocity;
 	private float moveSpeed = startMoveSpeed;
 
@@ -36,11 +38,11 @@ public class PlayerController : MonoBehaviour
 	{
 		Move();
 
-		if (Input.GetButtonDown("Fire1"))
+		if (connectedInput.PressedSwing())
 		{
 			SwingSword();
 		}
-		else if (Input.GetButtonDown("Fire2"))
+		else if (connectedInput.PressedThrow())
 		{
 			ThrowSword();
 		}
@@ -49,10 +51,10 @@ public class PlayerController : MonoBehaviour
 	// Move the player.
 	private void Move()
 	{
-		targetVelocity = new Vector2(Input.GetAxis("Horizontal") * moveSpeed, 
+		targetVelocity = new Vector2(connectedInput.GetHorizontal() * moveSpeed, 
 			rigidbody.velocity.y);
 
-		if (Input.GetButtonDown("Jump"))
+		if (connectedInput.PressedJump())
 		{
 			targetVelocity = new Vector2(targetVelocity.x, moveSpeed * 2.0f);
 		}
@@ -77,7 +79,8 @@ public class PlayerController : MonoBehaviour
 		{
 			// Create sword entity and throw it.
 			var newSword = SwordManager.instance.CreateSword(transform.position, Quaternion.identity);
-			newSword.transform.up = (transform.position + (Vector3)targetVelocity);
+			newSword.transform.up = 
+				new Vector3(connectedInput.GetHorizontal(), connectedInput.GetVertical(), 0.0f);
 			newSword.Throw();
 
 			justThrownSword = newSword;

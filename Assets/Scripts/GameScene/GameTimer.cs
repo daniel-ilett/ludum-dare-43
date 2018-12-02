@@ -9,6 +9,9 @@ public class GameTimer : MonoBehaviour
 	[SerializeField]
 	private Text timerText;
 
+	[SerializeField]
+	private Text startTimeText;
+
 	private int _seconds = 60;
 	private int Seconds
 	{

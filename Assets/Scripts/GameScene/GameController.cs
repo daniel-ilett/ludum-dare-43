@@ -10,12 +10,22 @@ public class GameController : MonoBehaviour
 	private PlayerController playerPrefab;
 
 	[SerializeField]
-	private List<GameObject> spawnPositions;
+	private List<Transform> spawnPositions;
 
 	private void Awake()
 	{
 		// Subscribe to game end event.
 		GetComponent<GameTimer>().TimerExpired += GameEnded;
+
+		var inputs = ConnectionController.connectedInputs;
+		
+		for(int i = 0; i < inputs.Count; ++i)
+		{
+			var input = inputs[i];
+			var newPlayer = Instantiate(playerPrefab, spawnPositions[i].position, Quaternion.identity);
+
+			newPlayer.connectedInput = input;
+		}
 	}
 
 	private void Update()

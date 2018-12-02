@@ -66,7 +66,7 @@ public class SwordManager : MonoBehaviour
 	// Maintain a loop of spawning a sword every few seconds.
 	private IEnumerator SpawnLoop()
 	{
-		var wait = new WaitForSeconds(2.0f);
+		var wait = new WaitForSeconds(1.0f);
 
 		while (shouldSpawn)
 		{
