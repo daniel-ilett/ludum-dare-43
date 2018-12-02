@@ -1,0 +1,27 @@
+fileFormatVersion: 2
+guid: 54011727e738a414db250d6059b7516f
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Loew
+  fontNames:
+  - Loew
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 20a238c1faa4a0540b51f70e7c5437e7, type: 3}
+  - {fileID: 12800000, guid: 37c05fa38fe094e4db53cbf7f245abb1, type: 3}
+  - {fileID: 12800000, guid: 4a1c5a078d8be874480dbf39daf9e537, type: 3}
+  - {fileID: 12800000, guid: 394c81b903cbe944a96f54694a7706a4, type: 3}
+  - {fileID: 12800000, guid: 3d6c87fb239b80c42b272baa266b44b8, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

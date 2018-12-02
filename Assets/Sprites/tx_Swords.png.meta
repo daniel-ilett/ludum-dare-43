@@ -2,9 +2,16 @@ fileFormatVersion: 2
 guid: f6b4aaa8c4341d6488a56b5aff5e17f7
 TextureImporter:
   fileIDToRecycleName:
-    21300000: tx_Swords_0
-    21300002: tx_Swords_1
-    21300004: tx_Swords_2
+    21300000: tx_MasterSword
+    21300002: tx_BusterSword
+    21300004: tx_GuardianSword
+    21300006: tx_LevinSword
+    21300008: tx_Cutlass
+    21300010: tx_QuesterSword
+    21300012: tx_Greatsword
+    21300014: tx_Claymore
+    21300016: tx_Katana
+    21300018: tx_Rapier
   externalObjects: {}
   serializedVersion: 7
   mipmaps:
@@ -87,7 +94,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tx_Swords_0
+      name: tx_MasterSword
       rect:
         serializedVersion: 2
         x: 0
@@ -101,13 +108,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 91485288134b497429294ea755ffde73
+      spriteID: b2121b20b16d1e1478fbf7b74fe57c22
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tx_Swords_1
+      name: tx_BusterSword
       rect:
         serializedVersion: 2
         x: 1024
@@ -121,13 +128,13 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: fe86acf6f2609f34889a0ead5ec5d1a9
+      spriteID: 213eb8b6057408945afca5e9e5c54f55
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tx_Swords_2
+      name: tx_GuardianSword
       rect:
         serializedVersion: 2
         x: 2048
@@ -141,7 +148,147 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3ebeac25ba0be3849b062f9ea6a26b3b
+      spriteID: 6fdde790591c21340a56c3b291128197
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tx_LevinSword
+      rect:
+        serializedVersion: 2
+        x: 3065
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e26279b5f28e53e48961f9ebddcf463a
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tx_Cutlass
+      rect:
+        serializedVersion: 2
+        x: 4096
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0531875da0edf7340afc6ed9568cdac4
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tx_QuesterSword
+      rect:
+        serializedVersion: 2
+        x: 5120
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7353444df6c266d44933ee666e1eee6f
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tx_Greatsword
+      rect:
+        serializedVersion: 2
+        x: 6144
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 475198b56e1a5904094458b35e5f92bd
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tx_Claymore
+      rect:
+        serializedVersion: 2
+        x: 7168
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a782d34362cbc94d8a85ad7451fe00c
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tx_Katana
+      rect:
+        serializedVersion: 2
+        x: 8192
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0d1344834e953f44b909a534224673c2
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: tx_Rapier
+      rect:
+        serializedVersion: 2
+        x: 9216
+        y: 0
+        width: 1024
+        height: 1024
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7428df59fdb88304384c1776263bbdae
       vertices: []
       indices: 
       edges: []

@@ -87,8 +87,8 @@ public class PlayerController : MonoBehaviour
 			{
 				var lastSword = heldSwords[heldSwords.Count - 1];
 				newSword.SetSprite(lastSword.sprite);
-				heldSwords.Remove(lastSword);
-				Destroy(lastSword);
+				//heldSwords.Remove(lastSword);
+				//Destroy(lastSword);
 			}
 			else
 			{
