@@ -6,6 +6,9 @@ using UnityEngine.UI;
 public class InputRemap : MonoBehaviour
 {
 	[SerializeField]
+	private Image bgImage;
+
+	[SerializeField]
 	private Text playerNumberText;
 
 	[SerializeField]
@@ -25,6 +28,20 @@ public class InputRemap : MonoBehaviour
 	{
 		playerSprite.SetActive(true);
 		joinOrReadyText.text = "Not\nReady";
+
+		StartCoroutine(LightenBackground());
+	}
+
+	// Raise a white bar over the remapper when the player connects.
+	private IEnumerator LightenBackground()
+	{
+		for(float t = 0.0f; t < 0.5f; t += Time.deltaTime)
+		{
+			bgImage.fillAmount = t / 0.5f;
+			yield return null;
+		}
+
+		bgImage.fillAmount = 1.0f;
 	}
 
 	// Set that this player is ready to start.

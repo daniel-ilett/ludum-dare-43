@@ -30,6 +30,7 @@ public class PlayerController : MonoBehaviour
 	private List<SpriteRenderer> heldSwords;
 
 	private const float startMoveSpeed = 5.0f;
+	private Vector3 respawnLocation;
 
 	private new Rigidbody2D rigidbody;
 	private Animator animator;
@@ -41,6 +42,9 @@ public class PlayerController : MonoBehaviour
 		rigidbody = GetComponent<Rigidbody2D>();
 		animator = GetComponent<Animator>();
 		heldSwords = new List<SpriteRenderer>();
+
+		// Remember spawn location for respawning.
+		respawnLocation = transform.position;
 
 		// Subscribe to the ground-checking event for reaching the ground.
 		groundCheck.HitGround += HitGround;
@@ -225,7 +229,34 @@ public class PlayerController : MonoBehaviour
 	// Instantly kill the player.
 	public void KillPlayer()
 	{
-		Debug.Log("Killed player");
+		transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+
+		// Reset all sword-holding parameters.
+		foreach(Transform sword in heldSwordsRoot)
+		{
+			Destroy(sword.gameObject);
+		}
+
+		heldSwords = new List<SpriteRenderer>();
+		handSprite.sprite = null;
+		justThrownSword = null;
+
+		OnSwordCountChanged(new SwordCountChangedEventArgs(heldSwords.Count));
+		StartCoroutine(Respawn());
+	}
+
+	// Wait a set time then respawn the player.
+	private IEnumerator Respawn()
+	{
+		var wait = new WaitForSeconds(1.0f);
+
+		for(int i = 0; i < 2; ++i)
+		{
+			yield return wait;
+		}
+
+		transform.position = respawnLocation;
+		rigidbody.velocity = Vector3.zero;
 	}
 }
 
