@@ -3,18 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class SwordEntity : MonoBehaviour
 {
 	private bool settled = false;
 
+	private int playerID;
+
 	private new Rigidbody2D rigidbody;
 	private new SpriteRenderer renderer;
+	private new Collider2D collider2D;
 
 	private void Awake()
 	{
 		// Set component properties.
 		rigidbody = GetComponent<Rigidbody2D>();
 		renderer = GetComponent<SpriteRenderer>();
+		collider2D = GetComponent<Collider2D>();
 	}
 
 	private void OnTriggerEnter2D(Collider2D other)
@@ -24,7 +29,7 @@ public class SwordEntity : MonoBehaviour
 			case "Player":
 				{
 					// Harm the player that was hit.
-					PlayerController player = other.gameObject.GetComponent<PlayerController>();
+					PlayerController player = other.GetComponent<PlayerController>();
 
 					if (player != null)
 					{
@@ -46,6 +51,25 @@ public class SwordEntity : MonoBehaviour
 			case "Sword":
 				// Do not collide with swords.
 				return;
+			case "Sacrifice":
+				{
+					// Place the sword in the sacrifice and aware the player who threw the sword.
+					Sacrifice sacrifice = other.GetComponent<Sacrifice>();
+
+					// Insert sword into the sacrifice.
+					if(sacrifice != null)
+					{
+						Destroy(collider2D);
+						StartCoroutine(StickIntoGeometry());
+					}
+
+					// Award points to the player that threw the sword.
+					if(playerID > 0)
+					{
+						Debug.Log("Aware player " + playerID + " a point.");
+					}
+				}
+				break;
 			default:
 				{
 					// Stick into level geometry.
@@ -84,8 +108,10 @@ public class SwordEntity : MonoBehaviour
 	}
 
 	// Give the sword a large velocity forwards and set gravity in 0.5s.
-	public void Throw()
+	public void Throw(int playerID)
 	{
+		this.playerID = playerID;
+
 		rigidbody.gravityScale = 0.0f;
 
 		rigidbody.AddForce(transform.up * 10.0f, ForceMode2D.Impulse);

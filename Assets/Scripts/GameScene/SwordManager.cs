@@ -60,7 +60,7 @@ public class SwordManager : MonoBehaviour
 
 		var newSprite = swordSprites[Random.Range(0, swordSprites.Count)];
 		newSword.SetSprite(newSprite);
-		newSword.Throw();
+		newSword.Throw(-1);
 	}
 
 	// Maintain a loop of spawning a sword every few seconds.

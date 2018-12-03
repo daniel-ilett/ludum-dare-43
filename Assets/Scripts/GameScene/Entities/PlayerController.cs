@@ -138,9 +138,16 @@ public class PlayerController : MonoBehaviour
 
 			// Create sword entity and throw it.
 			var newSword = SwordManager.instance.CreateSword(transform.position, Quaternion.identity);
-			newSword.transform.up = 
-				new Vector3(connectedInput.GetHorizontal(), connectedInput.GetVertical(), 0.0f);
-			newSword.Throw();
+			var throwDir = connectedInput.GetMoveDir();
+
+			if(throwDir.magnitude < 0.1f)
+			{
+				throwDir = new Vector3(facingRight ? 1.0f : -1.0f, 0.0f, 0.0f);
+			}
+
+			newSword.transform.up = throwDir;
+
+			newSword.Throw(connectedInput.GetPlayerID());
 
 			justThrownSword = newSword;
 			Invoke("ForgetSword", 0.25f);

@@ -89,6 +89,12 @@ public class ConnectedInput : MonoBehaviour
 		return Input.GetAxis(inputMap[InputName.MOVE_Y]);
 	}
 
+	// Return a 2D vector of the movement direction.
+	public Vector2 GetMoveDir()
+	{
+		return new Vector2(GetHorizontal(), GetVertical());
+	}
+
 	/*
 	private IEnumerator RemapInputs(InputName name)
 	{
