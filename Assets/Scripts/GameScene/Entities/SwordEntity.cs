@@ -31,11 +31,14 @@ public class SwordEntity : MonoBehaviour
 						if(settled)
 						{
 							player.PickupSword(this);
-							Destroy(gameObject);
+							DestroySword();
 						}
 						else
 						{
-							player.GetHitBySword(this);
+							if(player.GetHitBySword(this))
+							{
+								DestroySword();
+							}
 						}
 					}
 				}

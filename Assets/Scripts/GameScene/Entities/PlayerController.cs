@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Rigidbody2D))]
+[RequireComponent(typeof(Animator))]
 public class PlayerController : MonoBehaviour
 {
 	[SerializeField]
@@ -12,11 +13,17 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private Transform heldSwordsRoot;
 
+	[SerializeField]
+	private PlayerGroundCheck groundCheck;
+
 	public ConnectedInput connectedInput { private get; set; }
 
 	private Vector2 targetVelocity;
 	private float moveSpeed = startMoveSpeed;
 	private bool jumped = false;
+
+	private bool facingRight = true;
+	private bool hasAirJumped = false;
 
 	private SwordEntity justThrownSword;
 
@@ -25,13 +32,18 @@ public class PlayerController : MonoBehaviour
 	private const float startMoveSpeed = 5.0f;
 
 	private new Rigidbody2D rigidbody;
+	private Animator animator;
 
 	public event EventHandler<SwordCountChangedEventArgs> SwordCountChanged;
 
 	private void Awake()
 	{
 		rigidbody = GetComponent<Rigidbody2D>();
+		animator = GetComponent<Animator>();
 		heldSwords = new List<SpriteRenderer>();
+
+		// Subscribe to the ground-checking event for reaching the ground.
+		groundCheck.HitGround += HitGround;
 	}
 
 	// Game loop - called once per frame.
@@ -55,9 +67,42 @@ public class PlayerController : MonoBehaviour
 		targetVelocity = new Vector2(connectedInput.GetHorizontal() * moveSpeed, 
 			rigidbody.velocity.y);
 
+		// Set the "walking" animation.
+		animator.SetBool("IsWalking", targetVelocity.magnitude > 0.1f);
+
 		if (connectedInput.PressedJump())
 		{
-			jumped = true;
+			if(groundCheck.IsColliding())
+			{
+				jumped = true;
+			}
+			else if(!hasAirJumped)
+			{
+				hasAirJumped = true;
+				jumped = true;
+			}
+		}
+
+		// If the player turns around, flip their facing direction.
+		if((facingRight && connectedInput.GetHorizontal() < -0.1f) ||
+			(!facingRight && connectedInput.GetHorizontal() > 0.1f))
+		{
+			FaceDirection(!facingRight);
+		}
+	}
+
+	// Scale the player so they face a particular direction.
+	private void FaceDirection(bool facingRight)
+	{
+		this.facingRight = facingRight;
+
+		if(facingRight)
+		{
+			transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
+		}
+		else
+		{
+			transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
 		}
 	}
 
@@ -84,6 +129,9 @@ public class PlayerController : MonoBehaviour
 	{
 		if(heldSwords.Count > 0 || handSprite.sprite != null)
 		{
+			// Play the throw animation.
+			animator.SetTrigger("Throw");
+
 			// Create sword entity and throw it.
 			var newSword = SwordManager.instance.CreateSword(transform.position, Quaternion.identity);
 			newSword.transform.up = 
@@ -148,6 +196,12 @@ public class PlayerController : MonoBehaviour
 
 	}
 
+	// Event received when the GroundCheck hits ground.
+	private void HitGround(object sender, EventArgs e)
+	{
+		hasAirJumped = false;
+	}
+
 	// Forget you just threw a sword.
 	private void ForgetSword()
 	{
@@ -155,12 +209,16 @@ public class PlayerController : MonoBehaviour
 	}
 
 	// Apply damage to the player.
-	public void GetHitBySword(SwordEntity sword)
+	public bool GetHitBySword(SwordEntity sword)
 	{
 		// Only get hit by swords we didn't just throw.
 		if(sword != justThrownSword)
 		{
-
+			return true;
+		}
+		else
+		{
+			return false;
 		}
 	}
 
