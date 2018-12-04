@@ -98,8 +98,14 @@ public class PlayerController : MonoBehaviour
 	// Scale the player so they face a particular direction.
 	private void FaceDirection(bool facingRight)
 	{
+		if(this.facingRight != facingRight)
+		{
+			transform.localScale = new Vector3(transform.localScale.x * -1.0f, transform.localScale.y, 1.0f);
+		}
+
 		this.facingRight = facingRight;
 
+		/*
 		if(facingRight)
 		{
 			transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
@@ -108,6 +114,7 @@ public class PlayerController : MonoBehaviour
 		{
 			transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
 		}
+		*/
 	}
 
 	// Every physics frame, set the velocity to target velocity.

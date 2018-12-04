@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 61397185062266152}
   m_Layer: 9
   m_Name: obj_LongPlatform
-  m_TagString: Untagged
+  m_TagString: LevelGeom
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

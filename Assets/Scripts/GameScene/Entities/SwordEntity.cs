@@ -61,19 +61,25 @@ public class SwordEntity : MonoBehaviour
 					{
 						Destroy(collider2D);
 						StartCoroutine(StickIntoGeometry());
+						transform.parent = sacrifice.transform;
 					}
 
 					// Award points to the player that threw the sword.
 					if(playerID > 0)
 					{
-						Debug.Log("Aware player " + playerID + " a point.");
+						Debug.Log("Award player " + playerID + " a point.");
 					}
+				}
+				break;
+			case "LevelGeom":
+				{
+					// Stick into level geometry.
+					StartCoroutine(StickIntoGeometry());
 				}
 				break;
 			default:
 				{
-					// Stick into level geometry.
-					StartCoroutine(StickIntoGeometry());
+					
 				}
 				break;
 		}
@@ -129,7 +135,7 @@ public class SwordEntity : MonoBehaviour
 
 		for(float t = 0.0f; t < 0.25f; t += Time.deltaTime)
 		{
-			transform.position += direction * Time.deltaTime;
+			transform.localPosition += direction * Time.deltaTime;
 			yield return null;
 		}
 	}

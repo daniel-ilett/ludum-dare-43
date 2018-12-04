@@ -661,6 +661,52 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!1001 &1670480976
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -4.902421
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 1.8802474
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4618104150760574, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 1205068260958772, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 915a42c8fd76bc84cb9a210db59929df, type: 2}
+  m_IsPrefabAsset: 0
 --- !u!224 &2115472251 stripped
 RectTransform:
   m_CorrespondingSourceObject: {fileID: 224848002212920700, guid: cd88a0c853653d4429a2872eb5c4d41a,

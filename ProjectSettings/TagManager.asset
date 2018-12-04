@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Sword
   - Sacrifice
+  - LevelGeom
   layers:
   - Default
   - TransparentFX
