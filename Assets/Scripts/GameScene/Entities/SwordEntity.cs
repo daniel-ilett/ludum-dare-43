@@ -62,6 +62,7 @@ public class SwordEntity : MonoBehaviour
 						Destroy(collider2D);
 						StartCoroutine(StickIntoGeometry());
 						transform.parent = sacrifice.transform;
+						rigidbody.bodyType = RigidbodyType2D.Kinematic;
 					}
 
 					// Award points to the player that threw the sword.

@@ -6,9 +6,15 @@ using UnityEngine.SceneManagement;
 
 public class ConnectionController : MonoBehaviour
 {
+	// Message that tells players to press JUMP.
 	[SerializeField]
 	private Text headerText;
 
+	// White bar that fills across the screen when everyone is ready.
+	[SerializeField]
+	private Image headerBG;
+
+	// A persistent input controller that controls a player in the next scene.
 	[SerializeField]
 	private ConnectedInput inputPrefab;
 	
@@ -20,32 +26,20 @@ public class ConnectionController : MonoBehaviour
 
 	private List<InputRemap> remappers;
 
-	private int playersConnected = 0;
-
-	private const int maxPlayerCount = 8;
-
+	// Keep track of which inputs are connected.
 	private List<int> connectedControllerIDs;
 	private bool keyboardConnected;
 
-	private Dictionary<int, bool> accepted;
-
+	private int playersConnected = 0;
 	private bool isLoadingGame = false;
 
-	public static List<ConnectedInput> connectedInputs;
-	public static ConnectionController instance;
+	private Coroutine loadingRoutine;
+
+	private const int maxPlayerCount = 8;
 
 	private void Awake()
 	{
-		// Set self as singleton ConnectionController and reset connection list.
-		if(instance != null)
-		{
-			Destroy(instance.gameObject);
-		}
-
-		instance = this;
-		connectedInputs = new List<ConnectedInput>();
 		connectedControllerIDs = new List<int>();
-		accepted = new Dictionary<int, bool>();
 		remappers = new List<InputRemap>();
 
 		for(int i = 0; i < maxPlayerCount; ++i)
@@ -82,80 +76,49 @@ public class ConnectionController : MonoBehaviour
 		}
 		*/
 
-		if(!isLoadingGame)
+		// If a connected player presses Jump, they are ready to play.
+		foreach (var connectedInput in Connections.connectedInputs)
 		{
-			// If a connected player presses Jump, they are ready to play.
-			foreach (var connectedInput in connectedInputs)
+			if (connectedInput.PressedJump())
 			{
-				if (accepted[connectedInput.GetPlayerID()] == false &&
-					connectedInput.PressedJump())
+				if(!connectedInput.remapper.TogglePlayerReady())
 				{
-					accepted[connectedInput.GetPlayerID()] = true;
-					connectedInput.remapper.SetPlayerReady();
+					StopLoading();
+				}
+			}
+		}
+		
+		// Attempt to connect new controllers.
+		if (playersConnected < maxPlayerCount)
+		{
+			if (Input.GetButtonDown("K_Jump"))
+			{
+				AddKeyboard();
+			}
+
+			// Poll controllers for jump nbutton.
+			for (int i = 1; i <= 8; ++i)
+			{
+				if (Input.GetButtonDown("J" + i + "_Jump"))
+				{
+					AddController(i);
+				}
+			}
+		}
+
+		// After polling, check again if all players are ready.
+		// If all are ready, start the loading coroutine.
+		if(loadingRoutine == null && playersConnected > 0)
+		{
+			foreach (var connectedInput in Connections.connectedInputs)
+			{
+				if (connectedInput.remapper.IsWaiting())
+				{
+					return;
 				}
 			}
 
-			// Attempt to connect new controllers.
-			if (playersConnected < maxPlayerCount)
-			{
-				if (Input.GetButtonDown("K_Jump"))
-				{
-					AddKeyboard();
-				}
-
-				if (Input.GetButtonDown("J1_Jump"))
-				{
-					AddController(1);
-				}
-
-				if (Input.GetButtonDown("J2_Jump"))
-				{
-					AddController(2);
-				}
-
-				if (Input.GetButtonDown("J3_Jump"))
-				{
-					AddController(3);
-				}
-
-				if (Input.GetButtonDown("J4_Jump"))
-				{
-					AddController(4);
-				}
-
-				if (Input.GetButtonDown("J5_Jump"))
-				{
-					AddController(5);
-				}
-
-				if (Input.GetButtonDown("J6_Jump"))
-				{
-					AddController(6);
-				}
-
-				if (Input.GetButtonDown("J7_Jump"))
-				{
-					AddController(7);
-				}
-
-				if (Input.GetButtonDown("J8_Jump"))
-				{
-					AddController(8);
-				}
-			}
-
-			if (accepted.Count > 0)
-			{
-				foreach (var value in accepted.Values)
-				{
-					if (value == false)
-					{
-						return;
-					}
-				}
-
-				StartCoroutine(LoadGame());
-			}
+			loadingRoutine = StartCoroutine(LoadGame());
 		}
 	}
 
@@ -164,14 +127,15 @@ public class ConnectionController : MonoBehaviour
 	{
 		isLoadingGame = true;
 
-		int count = 3;
-		var wait = new WaitForSeconds(1.0f);
+		float count = 4.0f;
 
-		while(count > 0)
+		while(count > 1.0f)
 		{
-			headerText.text = "Everyone is ready - starting in " + count.ToString() + "...";
-			--count;
-			yield return wait;
+			headerText.text = "Everyone is ready - starting in " + (int)count + "...";
+			headerBG.fillAmount = 1.0f - ((count - 1.0f) / 3.0f);
+
+			count -= Time.deltaTime;
+			yield return null;
 		}
 
 		SceneManager.LoadScene("sc_GameScene");
@@ -185,11 +149,11 @@ public class ConnectionController : MonoBehaviour
 			var input = Instantiate(inputPrefab, Vector3.zero, Quaternion.identity);
 			input.SetConnType(ConnectionType.KEYBOARD, 0, remappers[playersConnected], ++playersConnected);
 			remappers[playersConnected - 1].SetPlayerConnected();
-
-			accepted.Add(playersConnected, false);
-			connectedInputs.Add(input);
+			
+			Connections.AddInput(input);
 
 			keyboardConnected = true;
+			StopLoading();
 		}
 	}
 
@@ -201,11 +165,24 @@ public class ConnectionController : MonoBehaviour
 			var input = Instantiate(inputPrefab, Vector3.zero, Quaternion.identity);
 			input.SetConnType(ConnectionType.CONTROLLER, joystickID, remappers[playersConnected], ++playersConnected);
 			remappers[playersConnected - 1].SetPlayerConnected();
-
-			accepted.Add(playersConnected, false);
-			connectedInputs.Add(input);
+			
+			Connections.AddInput(input);
 
 			connectedControllerIDs.Add(joystickID);
+			StopLoading();
+		}
+	}
+
+	// Stop trying to enter the scene.
+	private void StopLoading()
+	{
+		if(loadingRoutine != null)
+		{
+			headerText.text = "Press JUMP to join or be ready";
+			headerBG.fillAmount = 0.0f;
+
+			StopCoroutine(loadingRoutine);
+			loadingRoutine = null;
 		}
 	}
 }

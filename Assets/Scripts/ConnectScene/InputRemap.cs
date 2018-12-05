@@ -17,6 +17,9 @@ public class InputRemap : MonoBehaviour
 	[SerializeField]
 	private GameObject playerSprite;
 
+	private bool isJoined = false;
+	private bool isReady = false;
+
 	private void Start()
 	{
 		joinOrReadyText.text = "Join";
@@ -26,6 +29,8 @@ public class InputRemap : MonoBehaviour
 	// Let the remapper know a player has connected.
 	public void SetPlayerConnected()
 	{
+		isJoined = true;
+
 		playerSprite.SetActive(true);
 		joinOrReadyText.text = "Not\nReady";
 
@@ -44,10 +49,26 @@ public class InputRemap : MonoBehaviour
 		bgImage.fillAmount = 1.0f;
 	}
 
-	// Set that this player is ready to start.
-	public void SetPlayerReady()
+	// Return whether this player is connected but isn't ready.
+	public bool IsWaiting()
 	{
-		joinOrReadyText.text = "Ready!";
+		return (isJoined && !isReady);
+	}
+
+	// Set that this player is ready to start.
+	public void SetPlayerReady(bool isReady)
+	{
+		this.isReady = isReady;
+
+		joinOrReadyText.text = isReady ? "Ready!" : "Not\nReady";
+	}
+
+	// Switch the player ready state.
+	public bool TogglePlayerReady()
+	{
+		SetPlayerReady(!isReady);
+
+		return isReady;
 	}
 
 	// Set the text that appears for this remapper.

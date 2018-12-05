@@ -11,7 +11,7 @@ public class Sacrifice : MonoBehaviour
 		// Set up the point totals counter.
 		playerPoints = new Dictionary<int, int>();
 
-		for(int i = 0; i < ConnectionController.connectedInputs.Count; ++i)
+		for(int i = 0; i < Connections.connectedInputs.Count; ++i)
 		{
 			playerPoints.Add(i + 1, 0);
 		}

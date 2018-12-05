@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
 		// Subscribe to game end event.
 		GetComponent<GameTimer>().TimerExpired += GameEnded;
 
-		var inputs = ConnectionController.connectedInputs;
+		var inputs = Connections.connectedInputs;
 		
 		for(int i = 0; i < inputs.Count; ++i)
 		{
