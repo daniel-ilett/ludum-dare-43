@@ -6,8 +6,12 @@ public class Sacrifice : MonoBehaviour
 {
 	private Dictionary<int, int> playerPoints;
 
+	private new Rigidbody2D rigidbody;
+
 	private void Awake()
 	{
+		rigidbody = GetComponent<Rigidbody2D>();
+
 		// Set up the point totals counter.
 		playerPoints = new Dictionary<int, int>();
 
@@ -24,5 +28,11 @@ public class Sacrifice : MonoBehaviour
 		{
 			++playerPoints[playerID];
 		}
+	}
+
+	// Add a force to the Rigidbody component of the sacrifice.
+	public void AddForce(Vector3 force)
+	{
+		rigidbody.AddForce(force.normalized * 50.0f, ForceMode2D.Impulse);
 	}
 }

@@ -14,6 +14,9 @@ public class ConnectionController : MonoBehaviour
 	[SerializeField]
 	private Image headerBG;
 
+	[SerializeField]
+	private Image fadePlane;
+
 	// A persistent input controller that controls a player in the next scene.
 	[SerializeField]
 	private ConnectedInput inputPrefab;
@@ -32,6 +35,7 @@ public class ConnectionController : MonoBehaviour
 
 	private int playersConnected = 0;
 	private bool isLoadingGame = false;
+	private bool hasLoadedGame = false;
 
 	private Coroutine loadingRoutine;
 
@@ -52,6 +56,14 @@ public class ConnectionController : MonoBehaviour
 	}
 
 	private void Update()
+	{
+		if(!hasLoadedGame)
+		{
+			PollControllers();
+		}
+	}
+
+	private void PollControllers()
 	{
 		/*
 		// Loop through all joysticks.
@@ -138,7 +150,24 @@ public class ConnectionController : MonoBehaviour
 			yield return null;
 		}
 
+		hasLoadedGame = true;
+		yield return StartCoroutine(FadeToWhite());
+
 		SceneManager.LoadScene("sc_GameScene");
+	}
+
+	// Fade the screen to white.
+	private IEnumerator FadeToWhite()
+	{
+		float count = 0.5f;
+
+		while(count > 0.0f)
+		{
+			fadePlane.color = new Color(1.0f, 1.0f, 1.0f, 1.0f - (count / 0.5f));
+
+			count -= Time.deltaTime;
+			yield return null;
+		}
 	}
 
 	// Add the keyboard if not already added.
