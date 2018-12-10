@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -16,6 +17,9 @@ public class ConnectedInput : MonoBehaviour
 
 	private void Awake()
 	{
+		// Subscribe to the main menu start event.
+		Connections.ReturnToMainMenuEvent += OnReturnToMainMenu;
+
 		DontDestroyOnLoad(gameObject);
 	}
 
@@ -93,6 +97,12 @@ public class ConnectedInput : MonoBehaviour
 	public Vector2 GetMoveDir()
 	{
 		return new Vector2(GetHorizontal(), GetVertical());
+	}
+
+	// Called when the game returns to the main menu.
+	public void OnReturnToMainMenu(object sender, EventArgs e)
+	{
+		Destroy(gameObject);
 	}
 
 	/*

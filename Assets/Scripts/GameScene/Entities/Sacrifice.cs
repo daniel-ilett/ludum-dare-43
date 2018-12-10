@@ -4,35 +4,22 @@ using UnityEngine;
 
 public class Sacrifice : MonoBehaviour
 {
-	private Dictionary<int, int> playerPoints;
-
 	private new Rigidbody2D rigidbody;
 
 	private void Awake()
 	{
 		rigidbody = GetComponent<Rigidbody2D>();
-
-		// Set up the point totals counter.
-		playerPoints = new Dictionary<int, int>();
-
-		for(int i = 0; i < Connections.connectedInputs.Count; ++i)
-		{
-			playerPoints.Add(i + 1, 0);
-		}
 	}
 
-	// Get hit by a sword and record the points for the player that hit.
-	public void GetHitBySword(int playerID)
+	// Give points to player that threw the sword and add a force.
+	public void GetHitBySword(int playerID, Sprite sword, Vector3 force)
 	{
 		if(playerID > 0)
 		{
-			++playerPoints[playerID];
+			PointTracker.instance.AddPoint(playerID, sword);
+			Debug.Log("Player " + playerID + " gets a point.");
 		}
-	}
 
-	// Add a force to the Rigidbody component of the sacrifice.
-	public void AddForce(Vector3 force)
-	{
-		rigidbody.AddForce(force.normalized * 50.0f, ForceMode2D.Impulse);
+		rigidbody.AddForce(force.normalized * 5.0f, ForceMode2D.Impulse);
 	}
 }

@@ -40,9 +40,9 @@ public class InputRemap : MonoBehaviour
 	// Raise a white bar over the remapper when the player connects.
 	private IEnumerator LightenBackground()
 	{
-		for(float t = 0.0f; t < 0.5f; t += Time.deltaTime)
+		for(float t = 0.0f; t < 0.25f; t += Time.deltaTime)
 		{
-			bgImage.fillAmount = t / 0.5f;
+			bgImage.fillAmount = t / 0.25f;
 			yield return null;
 		}
 

@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,15 +8,12 @@ public static class Connections
 {
 	public static List<ConnectedInput> connectedInputs;
 
+	public static event EventHandler<EventArgs> ReturnToMainMenuEvent;
+
 	// Initialise the connection list.
 	static Connections()
 	{
 		connectedInputs = new List<ConnectedInput>();
-	}
-
-	public static void AddController()
-	{
-
 	}
 
 	// Add a controller connection.
@@ -33,6 +31,13 @@ public static class Connections
 	// When the game returns to the connection scene, remove existing connections.
 	public static void RemoveAllInputs()
 	{
+		EventHandler<EventArgs> handler = ReturnToMainMenuEvent;
+
+		if(handler != null)
+		{
+			handler(null, new EventArgs());
+		}
+
 		connectedInputs = new List<ConnectedInput>();
 	}
 }

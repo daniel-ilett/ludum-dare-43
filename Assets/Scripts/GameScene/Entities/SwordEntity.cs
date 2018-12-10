@@ -64,13 +64,7 @@ public class SwordEntity : MonoBehaviour
 						transform.parent = sacrifice.transform;
 						rigidbody.bodyType = RigidbodyType2D.Kinematic;
 
-						sacrifice.AddForce(transform.up);
-					}
-
-					// Award points to the player that threw the sword.
-					if(playerID > 0)
-					{
-						Debug.Log("Award player " + playerID + " a point.");
+						sacrifice.GetHitBySword(playerID, renderer.sprite, transform.up);
 					}
 				}
 				break;
