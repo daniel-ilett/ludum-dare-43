@@ -37,7 +37,23 @@ public class PointTracker : MonoBehaviour
 	// Return whether one player has more points than all others.
 	public bool IsAWinner()
 	{
-		return false;
+		bool isHighest = false;
+		int highestCount = -1;
+
+		foreach(var list in playerPoints.Values)
+		{
+			if (list.Count > highestCount)
+			{
+				highestCount = list.Count;
+				isHighest = true;
+			}
+			else if (list.Count == highestCount)
+			{
+				isHighest = false;
+			}
+		}
+
+		return isHighest;
 	}
 
 	// Return to boot screen, so tracker is invalid.

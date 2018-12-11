@@ -17,6 +17,9 @@ public class GameController : MonoBehaviour
 	[SerializeField]
 	private Image backgroundColor;
 
+	[SerializeField]
+	private GameCamera gameCamera;
+
 	private void Awake()
 	{
 		// Subscribe to game end event.
@@ -42,7 +45,32 @@ public class GameController : MonoBehaviour
 	private void GameEnded(object sender, EventArgs e)
 	{
 		Debug.Log("Game Over");
+
+		StartCoroutine(EndGame());
+	}
+
+	// We may need to wait on an overtime segment.
+	private IEnumerator EndGame()
+	{
+		if(!PointTracker.instance.IsAWinner())
+		{
+			yield return StartCoroutine(RunOvertime());
+		}
+
+		gameCamera.StartBlur();
 		StartCoroutine(LoadResults());
+	}
+
+	private IEnumerator RunOvertime()
+	{
+		// Change text to overtime.
+
+		gameCamera.StartOvertime();
+
+		while(!PointTracker.instance.IsAWinner())
+		{
+			yield return null;
+		}
 	}
 
 	// Load the results screen.

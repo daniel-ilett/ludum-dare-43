@@ -20,21 +20,33 @@ public class InputRemap : MonoBehaviour
 	private bool isJoined = false;
 	private bool isReady = false;
 
+	private Coroutine lightenRoutine = null;
+
 	private void Start()
 	{
 		joinOrReadyText.text = "Join";
 		playerSprite.SetActive(false);
 	}
 
-	// Let the remapper know a player has connected.
-	public void SetPlayerConnected()
+	// Let the remapper know if a player has dis/connected.
+	public void SetPlayerConnected(bool isJoined)
 	{
-		isJoined = true;
+		this.isJoined = isJoined;
 
-		playerSprite.SetActive(true);
-		joinOrReadyText.text = "Not\nReady";
+		playerSprite.SetActive(isJoined);
+		joinOrReadyText.text = isJoined ? "Not\nReady" : "Join";
 
-		StartCoroutine(LightenBackground());
+		if(isJoined)
+		{
+			lightenRoutine = StartCoroutine(LightenBackground());
+		}
+		else
+		{
+			StopCoroutine(lightenRoutine);
+			lightenRoutine = null;
+
+			bgImage.fillAmount = 0.0f;
+		}
 	}
 
 	// Raise a white bar over the remapper when the player connects.

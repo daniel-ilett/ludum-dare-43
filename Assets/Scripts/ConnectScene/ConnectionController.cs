@@ -29,21 +29,15 @@ public class ConnectionController : MonoBehaviour
 
 	private List<InputRemap> remappers;
 
-	// Keep track of which inputs are connected.
-	private List<int> connectedControllerIDs;
-	private bool keyboardConnected;
-
-	private int playersConnected = 0;
 	private bool isLoadingGame = false;
 	private bool hasLoadedGame = false;
 
 	private Coroutine loadingRoutine;
 
-	private const int maxPlayerCount = 8;
+	public const int maxPlayerCount = 8;
 
 	private void Awake()
 	{
-		connectedControllerIDs = new List<int>();
 		remappers = new List<InputRemap>();
 
 		for(int i = 0; i < maxPlayerCount; ++i)
@@ -88,9 +82,11 @@ public class ConnectionController : MonoBehaviour
 		}
 		*/
 
-		// If a connected player presses Jump, they are ready to play.
+		List<ConnectedInput> inputsToRemove = new List<ConnectedInput>();
+
 		foreach (var connectedInput in Connections.connectedInputs)
 		{
+			// If a connected player presses Jump, they are ready to play.
 			if (connectedInput.PressedJump())
 			{
 				if(!connectedInput.remapper.TogglePlayerReady())
@@ -98,14 +94,37 @@ public class ConnectionController : MonoBehaviour
 					StopLoading();
 				}
 			}
+
+			// If a connected player presses back, they are not ready or they
+			// wish to disconnect.
+			if(connectedInput.PressedBack())
+			{
+				if(connectedInput.remapper.IsWaiting())
+				{
+					inputsToRemove.Add(connectedInput);
+				}
+				else
+				{
+					if (!connectedInput.remapper.TogglePlayerReady())
+					{
+						StopLoading();
+					}
+				}
+			}
+		}
+
+		// Remove all ConnectedInputs that backed out completely.
+		foreach(var inputToRemove in inputsToRemove)
+		{
+			RemoveController(inputToRemove.GetJoystickID());
 		}
 		
 		// Attempt to connect new controllers.
-		if (playersConnected < maxPlayerCount)
+		if (Connections.connectedInputs.Count < maxPlayerCount)
 		{
 			if (Input.GetButtonDown("K_Jump"))
 			{
-				AddKeyboard();
+				AddController(0);
 			}
 
 			// Poll controllers for jump nbutton.
@@ -120,7 +139,7 @@ public class ConnectionController : MonoBehaviour
 
 		// After polling, check again if all players are ready.
 		// If all are ready, start the loading coroutine.
-		if(loadingRoutine == null && playersConnected > 0)
+		if(loadingRoutine == null && Connections.connectedInputs.Count > 0)
 		{
 			foreach (var connectedInput in Connections.connectedInputs)
 			{
@@ -170,35 +189,36 @@ public class ConnectionController : MonoBehaviour
 		}
 	}
 
-	// Add the keyboard if not already added.
-	private void AddKeyboard()
+	// Add a controller if not already added.
+	private void AddController(int joystickID)
 	{
-		if(!keyboardConnected)
+		if (!Connections.IsControllerConnected(joystickID))
 		{
+			int newPlayerID = Connections.GetNextPlayerID();
+			var remapper = remappers[newPlayerID - 1];
+
+			// Create a persistent connection object.
 			var input = Instantiate(inputPrefab, Vector3.zero, Quaternion.identity);
-			input.SetConnType(ConnectionType.KEYBOARD, 0, remappers[playersConnected], ++playersConnected);
-			remappers[playersConnected - 1].SetPlayerConnected();
+			input.SetConnType(joystickID, remapper, newPlayerID);
+
+			remapper.SetPlayerConnected(true);
 			
 			Connections.AddInput(input);
-
-			keyboardConnected = true;
 			StopLoading();
 		}
 	}
 
-	// Add a controller if not already added.
-	private void AddController(int joystickID)
+	// Remove a controller and destroy its 
+	private void RemoveController(int joystickID)
 	{
-		if (!connectedControllerIDs.Contains(joystickID))
-		{
-			var input = Instantiate(inputPrefab, Vector3.zero, Quaternion.identity);
-			input.SetConnType(ConnectionType.CONTROLLER, joystickID, remappers[playersConnected], ++playersConnected);
-			remappers[playersConnected - 1].SetPlayerConnected();
-			
-			Connections.AddInput(input);
+		var connectedInput = Connections.GetInputWithJoystickID(joystickID);
 
-			connectedControllerIDs.Add(joystickID);
-			StopLoading();
+		if(connectedInput != null)
+		{
+			connectedInput.remapper.SetPlayerConnected(false);
+
+			Connections.RemoveInput(connectedInput);
+			Destroy(connectedInput);
 		}
 	}
 

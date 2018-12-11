@@ -7,7 +7,6 @@ public class ConnectedInput : MonoBehaviour
 {
 	private int playerID;
 	private int joystickID;
-	private ConnectionType connType;
 
 	private Dictionary<InputName, string> inputMap;
 
@@ -24,22 +23,22 @@ public class ConnectedInput : MonoBehaviour
 	}
 
 	// Set the kind of controller this input is.
-	public void SetConnType(ConnectionType type, int joystickID, InputRemap remapper, int playerID)
+	public void SetConnType(int joystickID, InputRemap remapper, int playerID)
 	{
-		Debug.Log("Connected - type is " + type.ToString() + ", joystick ID is " + joystickID + ", playerID is " + playerID);
+		Debug.Log("Connected - joystick ID is " + joystickID + ", playerID is " + playerID);
 
-		connType = type;
 		this.playerID = playerID;
 		this.remapper = remapper;
 		this.joystickID = joystickID;
 
-		if(type == ConnectionType.CONTROLLER)
+		if(joystickID > 0)
 		{
 			inputMap = new Dictionary<InputName, string>
 			{
 				{ InputName.JUMP, "J" + joystickID + "_Jump" },
 				{ InputName.THROW, "J" + joystickID + "_Throw" },
 				{ InputName.SWING, "J" + joystickID + "_Swing" },
+				{ InputName.BACK, "J" + joystickID + "_Back" },
 				{ InputName.MOVE_X, "J" + joystickID + "_MoveHorizontal" },
 				{ InputName.MOVE_Y, "J" + joystickID + "_MoveVertical" },
 			};
@@ -51,6 +50,7 @@ public class ConnectedInput : MonoBehaviour
 				{ InputName.JUMP, "K_Jump" },
 				{ InputName.THROW, "K_Throw" },
 				{ InputName.SWING, "K_Swing" },
+				{ InputName.BACK, "K_Back" },
 				{ InputName.MOVE_X, "K_MoveHorizontal" },
 				{ InputName.MOVE_Y, "K_MoveVertical" },
 			};
@@ -61,6 +61,12 @@ public class ConnectedInput : MonoBehaviour
 	public int GetPlayerID()
 	{
 		return playerID;
+	}
+
+	// Return the joystickID.
+	public int GetJoystickID()
+	{
+		return joystickID;
 	}
 
 	// Return true when we pressed Jump.
@@ -79,6 +85,12 @@ public class ConnectedInput : MonoBehaviour
 	public bool PressedThrow()
 	{
 		return Input.GetButtonDown(inputMap[InputName.THROW]);
+	}
+
+	// Return true when we pressed Back.
+	public bool PressedBack()
+	{
+		return Input.GetButtonDown(inputMap[InputName.BACK]);
 	}
 
 	// Return the axis value for horizontal movement.
@@ -118,4 +130,10 @@ public class ConnectedInput : MonoBehaviour
 		}
 	}
 	*/
+
+	// Unsubscribe from the main menu event.
+	private void OnDestroy()
+	{
+		Connections.ReturnToMainMenuEvent -= OnReturnToMainMenu;
+	}
 }
