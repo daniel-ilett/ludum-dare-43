@@ -20,10 +20,15 @@ public class GameController : MonoBehaviour
 	[SerializeField]
 	private GameCamera gameCamera;
 
+	[SerializeField]
+	private GameTimer timer;
+
 	private void Awake()
 	{
+		timer = GetComponent<GameTimer>();
+
 		// Subscribe to game end event.
-		GetComponent<GameTimer>().TimerExpired += GameEnded;
+		timer.TimerExpired += GameEnded;
 
 		var inputs = Connections.connectedInputs;
 		
@@ -36,11 +41,6 @@ public class GameController : MonoBehaviour
 		}
 	}
 
-	private void Update()
-	{
-		
-	}
-
 	// Called whenever the game timer expires.
 	private void GameEnded(object sender, EventArgs e)
 	{
@@ -49,7 +49,7 @@ public class GameController : MonoBehaviour
 		StartCoroutine(EndGame());
 	}
 
-	// We may need to wait on an overtime segment.
+	// We may need to wait on an overtime segment. Else, load the results screen.
 	private IEnumerator EndGame()
 	{
 		if(!PointTracker.instance.IsAWinner())
@@ -61,6 +61,7 @@ public class GameController : MonoBehaviour
 		StartCoroutine(LoadResults());
 	}
 
+	// Start overtime prceedings.
 	private IEnumerator RunOvertime()
 	{
 		// Change text to overtime.

@@ -31,6 +31,7 @@ public class PointTracker : MonoBehaviour
 	// Add a score by a player with a specific sword type.
 	public void AddPoint(int playerID, Sprite sword)
 	{
+		Debug.Log("Added a point for player " + playerID);
 		playerPoints[playerID].Add(sword);
 	}
 
@@ -54,6 +55,12 @@ public class PointTracker : MonoBehaviour
 		}
 
 		return isHighest;
+	}
+
+	// Get a Dictionary of each player's sword list.
+	public Dictionary<int, List<Sprite>> GetPointSwords()
+	{
+		return new Dictionary<int, List<Sprite>>(playerPoints);
 	}
 
 	// Return to boot screen, so tracker is invalid.

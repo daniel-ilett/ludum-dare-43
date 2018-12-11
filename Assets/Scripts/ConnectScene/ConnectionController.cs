@@ -59,29 +59,6 @@ public class ConnectionController : MonoBehaviour
 
 	private void PollControllers()
 	{
-		/*
-		// Loop through all joysticks.
-		for(int js = 1; js <= 16; ++js)
-		{
-			// Loop through all buttons.
-			for(int b = 0; b < 20; ++b)
-			{
-				if(Input.GetKeyDown("joystick " + js + " button " + b))
-				{
-					Debug.Log("joystick " + js + " button " + b);
-				}
-			}
-
-			for(int a = 0; a < 20; ++a)
-			{
-				if (Mathf.Abs(Input.GetAxis("joystick " + js + " axis " + a)) > 0.5f)
-				{
-					Debug.Log("joystick " + js + " axis " + a);
-				}
-			}
-		}
-		*/
-
 		List<ConnectedInput> inputsToRemove = new List<ConnectedInput>();
 
 		foreach (var connectedInput in Connections.connectedInputs)
@@ -118,21 +95,29 @@ public class ConnectionController : MonoBehaviour
 		{
 			RemoveController(inputToRemove.GetJoystickID());
 		}
-		
+
 		// Attempt to connect new controllers.
 		if (Connections.connectedInputs.Count < maxPlayerCount)
 		{
-			if (Input.GetButtonDown("K_Jump"))
+			if ( (Input.GetButtonDown("K_Jump")) ||
+				 (Input.GetButtonDown("K_Swing")) ||
+				 (Input.GetButtonDown("K_Throw")) ||
+				 (Mathf.Abs(Input.GetAxis("K_MoveHorizontal")) > 0.5f) ||
+				 (Mathf.Abs(Input.GetAxis("K_MoveVertical")) > 0.5f))
 			{
 				AddController(0);
 			}
 
-			// Poll controllers for jump nbutton.
-			for (int i = 1; i <= 8; ++i)
+			// Loop through every joystick to poll for relevant actions.
+			for (int js = 1; js <= 16; ++js)
 			{
-				if (Input.GetButtonDown("J" + i + "_Jump"))
+				if( (Input.GetButtonDown("J" + js + "_Jump")) ||
+					(Input.GetButtonDown("J" + js + "_Swing")) ||
+					(Input.GetButtonDown("J" + js + "_Throw")) ||
+					(Mathf.Abs(Input.GetAxis("J" + js + "_MoveHorizontal")) > 0.5f) ||
+					(Mathf.Abs(Input.GetAxis("J" + js + "_MoveVertical")) > 0.5f) )
 				{
-					AddController(i);
+					AddController(js);
 				}
 			}
 		}

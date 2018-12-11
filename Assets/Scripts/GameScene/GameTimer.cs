@@ -12,7 +12,7 @@ public class GameTimer : MonoBehaviour
 	[SerializeField]
 	private Text startTimeText;
 
-	private int _seconds = 3;
+	private int _seconds = 60;
 	private int Seconds
 	{
 		get
@@ -58,5 +58,11 @@ public class GameTimer : MonoBehaviour
 		{
 			handler(this, e);
 		}
+	}
+
+	// Change the timer to reflect that it is overtime.
+	public void StartOvertime()
+	{
+		timerText.text = "Overtime";
 	}
 }

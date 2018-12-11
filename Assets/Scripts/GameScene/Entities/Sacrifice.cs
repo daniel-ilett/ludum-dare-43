@@ -17,9 +17,10 @@ public class Sacrifice : MonoBehaviour
 		if(playerID > 0)
 		{
 			PointTracker.instance.AddPoint(playerID, sword);
-			Debug.Log("Player " + playerID + " gets a point.");
 		}
 
-		rigidbody.AddForce(force.normalized * 5.0f, ForceMode2D.Impulse);
+		var impulse = (playerID > 0) ? 5.0f : 1.0f;
+
+		rigidbody.AddForce(force.normalized * impulse, ForceMode2D.Impulse);
 	}
 }
