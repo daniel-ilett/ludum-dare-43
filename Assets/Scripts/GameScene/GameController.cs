@@ -20,7 +20,6 @@ public class GameController : MonoBehaviour
 	[SerializeField]
 	private GameCamera gameCamera;
 
-	[SerializeField]
 	private GameTimer timer;
 
 	private void Awake()
@@ -65,6 +64,7 @@ public class GameController : MonoBehaviour
 	private IEnumerator RunOvertime()
 	{
 		// Change text to overtime.
+		timer.StartOvertime();
 
 		gameCamera.StartOvertime();
 

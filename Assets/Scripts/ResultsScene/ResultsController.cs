@@ -16,17 +16,17 @@ public class ResultsController : MonoBehaviour
 	private Image backgroundColour;
 
 	[SerializeField]
-	private Canvas canvas;
+	private Transform playerHolder;
 
 	[SerializeField]
 	private Sacrifice sacrifice;
 
 	private void Awake()
 	{
-		//StartCoroutine(FadeOut());
 		StartCoroutine(CountScores());
 	}
 
+	// Count and animate the scores for each player.
 	private IEnumerator CountScores()
 	{
 		var swordsUsed = PointTracker.instance.GetPointSwords();
@@ -102,7 +102,7 @@ public class ResultsController : MonoBehaviour
 
 				var pos = new Vector3(xPos, yPos) + sacrifice.transform.position;
 
-				var resultsPlayer = Instantiate(playerPrefab, canvas.transform);
+				var resultsPlayer = Instantiate(playerPrefab, playerHolder);
 				resultsPlayer.SetPosition(pos);
 				resultsPlayer.SetPlayerID(playerIDWithMost);
 				resultsPlayer.SetSwordCount(mostSwords);
@@ -116,6 +116,9 @@ public class ResultsController : MonoBehaviour
 		{
 			Debug.Log("Player " + playerID + " had no swords.");
 		}
+
+		yield return new WaitForSeconds(5.0f);
+		StartCoroutine(FadeOut());
 	}
 
 	// Fade the screen to black and load the start screen.
@@ -125,7 +128,7 @@ public class ResultsController : MonoBehaviour
 
 		for (float t = 1.0f; t > 0.0f; t -= Time.deltaTime)
 		{
-			backgroundColour.color = new Color(t, t, t, 1.0f);
+			backgroundColour.color = new Color(0.0f, 0.0f, 0.0f, 1.0f - t);
 
 			yield return null;
 		}
