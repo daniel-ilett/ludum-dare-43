@@ -22,6 +22,8 @@ public class PlayerController : MonoBehaviour
 	private float moveSpeed = startMoveSpeed;
 	private bool jumped = false;
 
+	private bool isAlive = true;
+
 	private bool facingRight = true;
 	private bool hasAirJumped = false;
 
@@ -120,13 +122,16 @@ public class PlayerController : MonoBehaviour
 	// Every physics frame, set the velocity to target velocity.
 	private void FixedUpdate()
 	{
-		if(jumped)
+		if(isAlive)
 		{
-			targetVelocity = new Vector2(targetVelocity.x, moveSpeed * 2.0f);
-			jumped = false;
-		}
+			if (jumped)
+			{
+				targetVelocity = new Vector2(targetVelocity.x, moveSpeed * 2.0f);
+				jumped = false;
+			}
 
-		rigidbody.velocity = targetVelocity;
+			rigidbody.velocity = targetVelocity;
+		}
 	}
 
 	// The player swings their sword around them to attack.
@@ -243,7 +248,9 @@ public class PlayerController : MonoBehaviour
 	// Instantly kill the player.
 	public void KillPlayer()
 	{
+		isAlive = false;
 		transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+		rigidbody.bodyType = RigidbodyType2D.Static;
 
 		// Reset all sword-holding parameters.
 		foreach(Transform sword in heldSwordsRoot)
@@ -270,7 +277,10 @@ public class PlayerController : MonoBehaviour
 		}
 
 		transform.position = respawnLocation;
+		rigidbody.bodyType = RigidbodyType2D.Dynamic;
 		rigidbody.velocity = Vector3.zero;
+
+		isAlive = true;
 	}
 }
 

@@ -31,6 +31,8 @@ public class GameTimer : MonoBehaviour
 
 	private void Awake()
 	{
+		// Set the initial value of the clock and start the timer loop.
+		Seconds = Seconds;
 		StartCoroutine(TimerLoop());
 	}
 

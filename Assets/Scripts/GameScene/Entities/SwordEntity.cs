@@ -6,6 +6,13 @@ using UnityEngine;
 [RequireComponent(typeof(SpriteRenderer))]
 public class SwordEntity : MonoBehaviour
 {
+	[SerializeField]
+	private HitMarker hitMarkerPrefab;
+	private HitMarker hitMarkerInstance;
+
+	[SerializeField]
+	private Transform hitPoint;
+
 	private bool settled = false;
 
 	private int playerID;
@@ -20,6 +27,8 @@ public class SwordEntity : MonoBehaviour
 		rigidbody = GetComponent<Rigidbody2D>();
 		renderer = GetComponent<SpriteRenderer>();
 		collider2D = GetComponent<Collider2D>();
+
+		hitMarkerInstance = Instantiate(hitMarkerPrefab);
 	}
 
 	private void OnTriggerEnter2D(Collider2D other)
@@ -40,8 +49,10 @@ public class SwordEntity : MonoBehaviour
 						}
 						else
 						{
+							// Don't destroy if this player just threw the sword.
 							if(player.GetHitBySword(this))
 							{
+								hitMarkerInstance.Play(hitPoint.position);
 								DestroySword();
 							}
 						}
@@ -64,6 +75,7 @@ public class SwordEntity : MonoBehaviour
 						transform.parent = sacrifice.transform;
 						rigidbody.bodyType = RigidbodyType2D.Kinematic;
 
+						hitMarkerInstance.Play(hitPoint.position);
 						sacrifice.GetHitBySword(playerID, renderer.sprite, transform.up);
 					}
 				}
@@ -126,6 +138,7 @@ public class SwordEntity : MonoBehaviour
 	private IEnumerator StickIntoGeometry()
 	{
 		settled = true;
+		renderer.color = Color.grey;
 
 		Vector3 direction = rigidbody.velocity.normalized;
 		rigidbody.bodyType = RigidbodyType2D.Static;
@@ -140,6 +153,7 @@ public class SwordEntity : MonoBehaviour
 	// Destroy the sword and remove it from the game.
 	public void DestroySword()
 	{
+		hitMarkerInstance.DestroyAfterPlaying();
 		Destroy(gameObject);
 	}
 }
