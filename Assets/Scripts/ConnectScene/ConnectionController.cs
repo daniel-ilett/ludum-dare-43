@@ -45,6 +45,8 @@ public class ConnectionController : MonoBehaviour
 			var newRemapper = Instantiate(remapperPrefab, remapperRoot);
 			newRemapper.SetPlayerNumber(i + 1);
 
+			newRemapper.gameObject.SetActive((i < 2) ? true : false);
+
 			remappers.Add(newRemapper);
 		}
 	}
@@ -124,7 +126,7 @@ public class ConnectionController : MonoBehaviour
 
 		// After polling, check again if all players are ready.
 		// If all are ready, start the loading coroutine.
-		if(loadingRoutine == null && Connections.connectedInputs.Count > 0)
+		if(loadingRoutine == null && Connections.connectedInputs.Count > 1)
 		{
 			foreach (var connectedInput in Connections.connectedInputs)
 			{
@@ -181,6 +183,7 @@ public class ConnectionController : MonoBehaviour
 		{
 			int newPlayerID = Connections.GetNextPlayerID();
 			var remapper = remappers[newPlayerID - 1];
+			remapper.gameObject.SetActive(true);
 
 			// Create a persistent connection object.
 			var input = Instantiate(inputPrefab, Vector3.zero, Quaternion.identity);
@@ -212,7 +215,7 @@ public class ConnectionController : MonoBehaviour
 	{
 		if(loadingRoutine != null)
 		{
-			headerText.text = "Press JUMP to join or be ready";
+			headerText.text = "Up to 8 players can join by pressing JUMP.";
 			headerBG.fillAmount = 0.0f;
 
 			StopCoroutine(loadingRoutine);

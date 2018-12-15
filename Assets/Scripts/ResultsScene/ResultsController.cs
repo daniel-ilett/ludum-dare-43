@@ -13,16 +13,26 @@ public class ResultsController : MonoBehaviour
 	private ResultsPlayer playerPrefab;
 
 	[SerializeField]
+	private ZeroScoreIcon zeroScorePrefab;
+
+	[SerializeField]
 	private Image backgroundColour;
 
 	[SerializeField]
 	private Transform playerHolder;
 
 	[SerializeField]
+	private Transform zeroScoreHolder;
+
+	[SerializeField]
+	private Text winnerText;
+
+	[SerializeField]
 	private Sacrifice sacrifice;
 
 	private void Awake()
 	{
+		winnerText.text = "";
 		StartCoroutine(CountScores());
 	}
 
@@ -47,6 +57,8 @@ public class ResultsController : MonoBehaviour
 		bool shouldSearch = true;
 		var wait = new WaitForSeconds(0.1f);
 
+		int winnerID = -1;
+
 		// Find the player with most swords thrown and add their score.
 		while(shouldSearch)
 		{
@@ -68,6 +80,11 @@ public class ResultsController : MonoBehaviour
 			}
 			else
 			{
+				if(winnerID == -1)
+				{
+					winnerID = playerIDWithMost;
+				}
+
 				float averageRadians = 0.0f;
 
 				float xPos;
@@ -106,15 +123,19 @@ public class ResultsController : MonoBehaviour
 				resultsPlayer.SetPosition(pos);
 				resultsPlayer.SetPlayerID(playerIDWithMost);
 				resultsPlayer.SetSwordCount(mostSwords);
-
-				Debug.Log("Player " + playerIDWithMost + " has " + mostSwords + " swords.");
+				
 				swordsUsed.Remove(playerIDWithMost);
 			}
 		}
 
-		foreach(var playerID in swordsUsed.Keys)
+		winnerText.text = "P" + winnerID.ToString();
+
+		// Spawn a marker to display who scored nothing.
+		foreach (var playerID in swordsUsed.Keys)
 		{
-			Debug.Log("Player " + playerID + " had no swords.");
+			var newZeroScore = Instantiate(zeroScorePrefab, zeroScoreHolder);
+			newZeroScore.SetPlayerNumber(playerID);
+			yield return wait;
 		}
 
 		yield return new WaitForSeconds(5.0f);

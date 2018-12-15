@@ -8,6 +8,9 @@ public class ResultsPlayer : MonoBehaviour
 	[SerializeField]
 	private Text playerIDText;
 
+	[SerializeField]
+	private Text scoreText;
+
 	private RectTransform rectTransform;
 
 	private void Awake()
@@ -33,6 +36,6 @@ public class ResultsPlayer : MonoBehaviour
 	// Set the number of swords this player threw.
 	public void SetSwordCount(int swordCount)
 	{
-
+		scoreText.text = swordCount.ToString() + "pts";
 	}
 }

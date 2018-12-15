@@ -237,6 +237,7 @@ public class PlayerController : MonoBehaviour
 		// Only get hit by swords we didn't just throw.
 		if(sword != justThrownSword)
 		{
+			KillPlayer();
 			return true;
 		}
 		else

@@ -22,7 +22,7 @@ public class InputRemap : MonoBehaviour
 
 	private Coroutine lightenRoutine = null;
 
-	private void Start()
+	private void Awake()
 	{
 		joinOrReadyText.text = "Join";
 		playerSprite.SetActive(false);
