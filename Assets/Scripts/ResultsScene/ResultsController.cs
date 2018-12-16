@@ -114,8 +114,8 @@ public class ResultsController : MonoBehaviour
 				// Find the average angle swords are placed at and add a player icon there.
 				averageRadians /= mostSwords;
 
-				xPos = distance * 1.5f * Mathf.Sin(averageRadians);
-				yPos = distance * 1.5f * Mathf.Cos(averageRadians);
+				xPos = distance * 1.25f * Mathf.Sin(averageRadians);
+				yPos = distance * 1.25f * Mathf.Cos(averageRadians);
 
 				var pos = new Vector3(xPos, yPos) + sacrifice.transform.position;
 

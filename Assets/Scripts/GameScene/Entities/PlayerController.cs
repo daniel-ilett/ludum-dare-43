@@ -246,6 +246,14 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
+	// Set the absolute position of the player along X.
+	public void SetXPosition(Vector3 position)
+	{
+		var newPos = transform.position;
+		newPos.x = position.x;
+		transform.position = newPos;
+	}
+
 	// Instantly kill the player.
 	public void KillPlayer()
 	{
