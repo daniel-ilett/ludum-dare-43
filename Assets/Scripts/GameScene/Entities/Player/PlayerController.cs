@@ -3,8 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Rigidbody2D))]
-[RequireComponent(typeof(Animator))]
+[RequireComponent(typeof(PlayerMovement))]
+[RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
 	[SerializeField]
@@ -13,27 +13,32 @@ public class PlayerController : MonoBehaviour
 	[SerializeField]
 	private Transform heldSwordsRoot;
 
-	[SerializeField]
-	private PlayerGroundCheck groundCheck;
-
-	public ConnectedInput connectedInput { private get; set; }
-
-	private Vector2 targetVelocity;
-	private float moveSpeed = startMoveSpeed;
-	private bool jumped = false;
+	// Set the PlayerMovement connected input component when ours is set.
+	private ConnectedInput _connectedInput;
+	public ConnectedInput ConnectedInput
+	{
+		private get
+		{
+			return _connectedInput;
+		}
+		set
+		{
+			_connectedInput = value;
+			movement.connectedInput = value;
+		}
+	}
 
 	private bool isAlive = true;
-
-	private bool facingRight = true;
-	private bool hasAirJumped = false;
+	private bool isVulnerable = true;
 
 	private SwordEntity justThrownSword;
 
 	private List<SpriteRenderer> heldSwords;
 
-	private const float startMoveSpeed = 5.0f;
 	private Vector3 respawnLocation;
 
+	// Component caching.
+	private PlayerMovement movement;
 	private new Rigidbody2D rigidbody;
 	private Animator animator;
 
@@ -41,97 +46,38 @@ public class PlayerController : MonoBehaviour
 
 	private void Awake()
 	{
+		movement = GetComponent<PlayerMovement>();
 		rigidbody = GetComponent<Rigidbody2D>();
 		animator = GetComponent<Animator>();
+
 		heldSwords = new List<SpriteRenderer>();
 
 		// Remember spawn location for respawning.
 		respawnLocation = transform.position;
-
-		// Subscribe to the ground-checking event for reaching the ground.
-		groundCheck.HitGround += HitGround;
 	}
 
 	// Game loop - called once per frame.
 	private void Update()
 	{
-		Move();
-
-		if (connectedInput.PressedSwing())
+		if (isAlive)
 		{
-			SwingSword();
-		}
-		else if (connectedInput.PressedThrow())
-		{
-			ThrowSword();
-		}
-	}
+			movement.Move();
 
-	// Move the player.
-	private void Move()
-	{
-		targetVelocity = new Vector2(connectedInput.GetHorizontal() * moveSpeed, 
-			rigidbody.velocity.y);
-
-		// Set the "walking" animation.
-		animator.SetBool("IsWalking", targetVelocity.magnitude > 0.1f);
-
-		if (connectedInput.PressedJump())
-		{
-			if(groundCheck.IsColliding())
+			if (ConnectedInput.PressedSwing())
 			{
-				jumped = true;
+				SwingSword();
 			}
-			else if(!hasAirJumped)
+			else if (ConnectedInput.PressedThrow())
 			{
-				hasAirJumped = true;
-				jumped = true;
+				ThrowSword();
 			}
 		}
-
-		// If the player turns around, flip their facing direction.
-		if((facingRight && connectedInput.GetHorizontal() < -0.1f) ||
-			(!facingRight && connectedInput.GetHorizontal() > 0.1f))
-		{
-			FaceDirection(!facingRight);
-		}
 	}
 
-	// Scale the player so they face a particular direction.
-	private void FaceDirection(bool facingRight)
-	{
-		if(this.facingRight != facingRight)
-		{
-			transform.localScale = new Vector3(transform.localScale.x * -1.0f, transform.localScale.y, 1.0f);
-		}
-
-		this.facingRight = facingRight;
-
-		/*
-		if(facingRight)
-		{
-			transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-		}
-		else
-		{
-			transform.localScale = new Vector3(-1.0f, 1.0f, 1.0f);
-		}
-		*/
-	}
-
-	// Every physics frame, set the velocity to target velocity.
+	// Physics update step, called every 1/60th of a second.
 	private void FixedUpdate()
 	{
-		if(isAlive)
-		{
-			if (jumped)
-			{
-				targetVelocity = new Vector2(targetVelocity.x, moveSpeed * 2.0f);
-				jumped = false;
-			}
-
-			rigidbody.velocity = targetVelocity;
-		}
+		movement.DoFixedUpdate();
 	}
 
 	// The player swings their sword around them to attack.
@@ -150,16 +96,16 @@ public class PlayerController : MonoBehaviour
 
 			// Create sword entity and throw it.
 			var newSword = SwordManager.instance.CreateSword(transform.position, Quaternion.identity);
-			var throwDir = connectedInput.GetMoveDir();
+			var throwDir = ConnectedInput.GetMoveDir();
 
 			if(throwDir.magnitude < 0.1f)
 			{
-				throwDir = new Vector3(facingRight ? 1.0f : -1.0f, 0.0f, 0.0f);
+				throwDir = new Vector3(movement.IsFacingRight() ? 1.0f : -1.0f, 0.0f, 0.0f);
 			}
 
 			newSword.transform.up = throwDir;
 
-			newSword.Throw(connectedInput.GetPlayerID());
+			newSword.Throw(ConnectedInput.GetPlayerID());
 
 			justThrownSword = newSword;
 			Invoke("ForgetSword", 0.25f);
@@ -219,12 +165,6 @@ public class PlayerController : MonoBehaviour
 
 	}
 
-	// Event received when the GroundCheck hits ground.
-	private void HitGround(object sender, EventArgs e)
-	{
-		hasAirJumped = false;
-	}
-
 	// Forget you just threw a sword.
 	private void ForgetSword()
 	{
@@ -257,9 +197,7 @@ public class PlayerController : MonoBehaviour
 	// Instantly kill the player.
 	public void KillPlayer()
 	{
-		isAlive = false;
-		transform.position = new Vector3(100.0f, 0.0f, 0.0f);
-		rigidbody.bodyType = RigidbodyType2D.Static;
+		SetIsAlive(false);
 
 		// Reset all sword-holding parameters.
 		foreach(Transform sword in heldSwordsRoot)
@@ -284,12 +222,30 @@ public class PlayerController : MonoBehaviour
 		{
 			yield return wait;
 		}
+		
+		SetIsAlive(true);
+	}
 
-		transform.position = respawnLocation;
-		rigidbody.bodyType = RigidbodyType2D.Dynamic;
-		rigidbody.velocity = Vector3.zero;
+	private void SetIsAlive(bool isAlive)
+	{
+		if(this.isAlive == isAlive)
+		{
+			return;
+		}
 
-		isAlive = true;
+		this.isAlive = isAlive;
+
+		if (isAlive)
+		{
+			transform.position = respawnLocation;
+			rigidbody.bodyType = RigidbodyType2D.Dynamic;
+		}
+		else
+		{
+			transform.position = new Vector3(100.0f, 0.0f, 0.0f);
+			rigidbody.bodyType = RigidbodyType2D.Static;
+			rigidbody.velocity = Vector3.zero;
+		}
 	}
 }
 

@@ -55,6 +55,7 @@ GameObject:
   - component: {fileID: 61169437060336034}
   - component: {fileID: 50439074674346076}
   - component: {fileID: 114410536339685782}
+  - component: {fileID: 114397997943191210}
   - component: {fileID: 95468596173855994}
   m_Layer: 8
   m_Name: obj_Player
@@ -400,6 +401,17 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!114 &114397997943191210
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1205068260958772}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2a807be131fef54885d021a3bae581b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114410536339685782
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -413,7 +425,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   handSprite: {fileID: 212547841860569174}
   heldSwordsRoot: {fileID: 4539920083905644}
-  groundCheck: {fileID: 114998192194693422}
 --- !u!114 &114998192194693422
 MonoBehaviour:
   m_ObjectHideFlags: 1

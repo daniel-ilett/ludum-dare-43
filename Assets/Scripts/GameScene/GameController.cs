@@ -36,7 +36,7 @@ public class GameController : MonoBehaviour
 			var input = inputs[i];
 			var newPlayer = Instantiate(playerPrefab, spawnPositions[i].position, Quaternion.identity);
 
-			newPlayer.connectedInput = input;
+			newPlayer.ConnectedInput = input;
 		}
 	}
 

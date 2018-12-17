@@ -7,32 +7,21 @@ using UnityEngine.SceneManagement;
 public class ResultsController : MonoBehaviour
 {
 	[SerializeField]
-	private SwordEntity swordPrefab;
-
-	[SerializeField]
-	private ResultsPlayer playerPrefab;
-
-	[SerializeField]
-	private ZeroScoreIcon zeroScorePrefab;
-
-	[SerializeField]
 	private Image backgroundColour;
 
 	[SerializeField]
 	private Transform playerHolder;
 
 	[SerializeField]
-	private Transform zeroScoreHolder;
+	private ResultsLayout layoutEight;
 
 	[SerializeField]
-	private Text winnerText;
+	private ResultsLayout layoutFour;
 
-	[SerializeField]
-	private Sacrifice sacrifice;
+	private ResultsLayout currentLayout;
 
 	private void Awake()
 	{
-		winnerText.text = "";
 		StartCoroutine(CountScores());
 	}
 
@@ -41,101 +30,26 @@ public class ResultsController : MonoBehaviour
 	{
 		var swordsUsed = PointTracker.instance.GetPointSwords();
 
-		int totalSwordCount = 0;
-
-		// Find the total number of swords that were used.
-		foreach (var playerID in swordsUsed.Keys)
+		// Enable the correct layout for the number of players.
+		if(swordsUsed.Count > 4)
 		{
-			totalSwordCount += swordsUsed[playerID].Count;
+			layoutEight.gameObject.SetActive(true);
+			layoutFour.gameObject.SetActive(false);
+
+			currentLayout = layoutEight;
+		}
+		else
+		{
+			layoutEight.gameObject.SetActive(false);
+			layoutFour.gameObject.SetActive(true);
+
+			currentLayout = layoutFour;
 		}
 
-		float increment = 210.0f / totalSwordCount;
-		float currentAngle = 75.0f + (increment / 2.0f);
-
-		float distance = 2.0f;
-
-		bool shouldSearch = true;
-		var wait = new WaitForSeconds(0.1f);
-
-		int winnerID = -1;
-
-		// Find the player with most swords thrown and add their score.
-		while(shouldSearch)
+		// Assign points to the layout controller.
+		foreach(var playerID in swordsUsed.Keys)
 		{
-			var mostSwords = 0;
-			int playerIDWithMost = -1;
-
-			foreach(var playerID in swordsUsed.Keys)
-			{
-				if(swordsUsed[playerID].Count > mostSwords)
-				{
-					playerIDWithMost = playerID;
-					mostSwords = swordsUsed[playerID].Count;
-				}
-			}
-
-			if(mostSwords == 0)
-			{
-				shouldSearch = false;
-			}
-			else
-			{
-				if(winnerID == -1)
-				{
-					winnerID = playerIDWithMost;
-				}
-
-				float averageRadians = 0.0f;
-
-				float xPos;
-				float yPos;
-
-				// Throw each sword at the sacrifice.
-				foreach(var swordSprite in swordsUsed[playerIDWithMost])
-				{
-					var radians = Mathf.Deg2Rad * currentAngle;
-					averageRadians += radians;
-
-					xPos = distance * Mathf.Sin(radians);
-					yPos = distance * Mathf.Cos(radians);
-
-					var newPos = new Vector3(xPos, yPos) + sacrifice.transform.position;
-
-					var newSword = Instantiate(swordPrefab, newPos, Quaternion.identity);
-					newSword.transform.up = sacrifice.transform.position - newPos;
-					newSword.SetSprite(swordSprite);
-
-					newSword.Throw(-1);
-
-					currentAngle += increment;
-					yield return wait;
-				}
-
-				// Find the average angle swords are placed at and add a player icon there.
-				averageRadians /= mostSwords;
-
-				xPos = distance * 1.25f * Mathf.Sin(averageRadians);
-				yPos = distance * 1.25f * Mathf.Cos(averageRadians);
-
-				var pos = new Vector3(xPos, yPos) + sacrifice.transform.position;
-
-				var resultsPlayer = Instantiate(playerPrefab, playerHolder);
-				resultsPlayer.SetPosition(pos);
-				resultsPlayer.SetPlayerID(playerIDWithMost);
-				resultsPlayer.SetSwordCount(mostSwords);
-				
-				swordsUsed.Remove(playerIDWithMost);
-			}
-		}
-
-		winnerText.text = "P" + winnerID.ToString();
-
-		// Spawn a marker to display who scored nothing.
-		foreach (var playerID in swordsUsed.Keys)
-		{
-			var newZeroScore = Instantiate(zeroScorePrefab, zeroScoreHolder);
-			newZeroScore.SetPlayerNumber(playerID);
-			yield return wait;
+			currentLayout.SetPlayerStats(playerID, swordsUsed[playerID].Count);
 		}
 
 		yield return new WaitForSeconds(5.0f);
