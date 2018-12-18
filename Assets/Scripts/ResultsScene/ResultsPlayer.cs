@@ -3,6 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/*	ResultsPlayer is a representation of one player on the Results screen. It
+ *	tells the players how well a given player scored, as well as what position
+ *	they came in and which character they were playing as.
+ */
 public class ResultsPlayer : MonoBehaviour
 {
 	[SerializeField]
@@ -53,7 +57,7 @@ public class ResultsPlayer : MonoBehaviour
 	// Set the sword total counter and give a graphical representation.
 	public void SetSwordCount(int swordCount)
 	{
-		scoreText.text = swordCount.ToString() + " swords";
+		scoreText.text = swordCount.ToString() + ((swordCount != 1) ? " swords" : " sword");
 
 		int tens = Mathf.FloorToInt(swordCount / 10);
 		swordCount -= tens * 10;

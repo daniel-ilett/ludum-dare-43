@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*	MenuSword is a decorative item that appears on the Connection screen. It
+ *	has an edge-rendering shader with a thick outline for a striking effect.
+ */
 public class MenuSword : MonoBehaviour
 {
 	[SerializeField]
@@ -9,6 +12,17 @@ public class MenuSword : MonoBehaviour
 
 	[SerializeField]
 	private Transform model;
+
+	[SerializeField]
+	private List<GameObject> models;
+
+	// Place a random sword on the screen.
+	private void Awake()
+	{
+		int modelIndex = Random.Range(0, models.Count);
+
+		Instantiate(models[modelIndex], model);
+	}
 
 	private void Update()
 	{

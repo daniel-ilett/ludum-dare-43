@@ -4,6 +4,11 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 
+/*	ResultsController handles the flow of events on the Results screen. First of
+ *	all, the results are displayed on screen during a fade-in effect. Then,
+ *	we wait until the game is ready to reset. We fade out to black and the
+ *	connection screen is displayed.
+ */
 public class ResultsController : MonoBehaviour
 {
 	[SerializeField]
@@ -11,9 +16,10 @@ public class ResultsController : MonoBehaviour
 
 	[SerializeField]
 	private ResultsLayout playerLayout;
-
-	private void Start()
+	
+	private void Awake()
 	{
+		StartCoroutine(FadeIn());
 		StartCoroutine(CountScores());
 	}
 
@@ -21,6 +27,8 @@ public class ResultsController : MonoBehaviour
 	private IEnumerator CountScores()
 	{
 		var swordsUsed = PointTracker.instance.GetPointSwords();
+
+		playerLayout.LayoutResults(swordsUsed.Count);
 
 		int resultID = 0;
 
@@ -63,6 +71,19 @@ public class ResultsController : MonoBehaviour
 		
 		yield return new WaitForSeconds(5.0f);
 		StartCoroutine(FadeOut());
+	}
+
+	// Fade the screen in from white to transparent.
+	private IEnumerator FadeIn()
+	{
+		for (float t = 1.0f; t > 0.0f; t -= Time.deltaTime)
+		{
+			backgroundColour.color = new Color(1.0f, 1.0f, 1.0f, t);
+
+			yield return null;
+		}
+
+		backgroundColour.color = Color.clear;
 	}
 
 	// Fade the screen to black and load the start screen.

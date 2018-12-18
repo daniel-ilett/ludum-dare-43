@@ -2,6 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+/*	ResultsLayout is the root transform for the 2-8 ResultsPlayer objects on the
+ *	Results screen. It dynamically creates the required number of objects, then
+ *	controls the assignment of data to each object.
+ */
 public class ResultsLayout : MonoBehaviour
 {
 	[SerializeField]
@@ -10,11 +14,9 @@ public class ResultsLayout : MonoBehaviour
 	protected List<ResultsPlayer> resultsPlayers;
 
 	// Programmatically place all layout elements.
-	private void Awake()
+	public void LayoutResults(int playerCount)
 	{
 		resultsPlayers = new List<ResultsPlayer>();
-
-		var playerCount = PointTracker.instance.GetPointSwords().Count;
 
 		for(int i = 0; i < playerCount; ++i)
 		{

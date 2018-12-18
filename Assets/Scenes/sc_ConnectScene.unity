@@ -327,7 +327,7 @@ Prefab:
     - target: {fileID: 224848002212920700, guid: cd88a0c853653d4429a2872eb5c4d41a,
         type: 2}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 224848002212920700, guid: cd88a0c853653d4429a2872eb5c4d41a,
         type: 2}
@@ -427,7 +427,7 @@ Prefab:
     - target: {fileID: 224150965690849250, guid: d88edc05469625c4387f116d06f2c20b,
         type: 2}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 224150965690849250, guid: d88edc05469625c4387f116d06f2c20b,
         type: 2}
@@ -655,7 +655,18 @@ MonoBehaviour:
     type: 2}
   m_PrefabInternal: {fileID: 388296823}
   m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
---- !u!1001 &959446746
+--- !u!224 &1315366406 stripped
+RectTransform:
+  m_CorrespondingSourceObject: {fileID: 224150965690849250, guid: d88edc05469625c4387f116d06f2c20b,
+    type: 2}
+  m_PrefabInternal: {fileID: 388296823}
+--- !u!114 &1315366407 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 114173631243891618, guid: d88edc05469625c4387f116d06f2c20b,
+    type: 2}
+  m_PrefabInternal: {fileID: 388296823}
+  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+--- !u!1001 &1467340931
 Prefab:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -697,17 +708,6 @@ Prefab:
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: eeeb4f0f61512f9449fc94eb23902f99, type: 2}
   m_IsPrefabAsset: 0
---- !u!224 &1315366406 stripped
-RectTransform:
-  m_CorrespondingSourceObject: {fileID: 224150965690849250, guid: d88edc05469625c4387f116d06f2c20b,
-    type: 2}
-  m_PrefabInternal: {fileID: 388296823}
---- !u!114 &1315366407 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 114173631243891618, guid: d88edc05469625c4387f116d06f2c20b,
-    type: 2}
-  m_PrefabInternal: {fileID: 388296823}
-  m_Script: {fileID: -765806418, guid: f70555f144d8491a825f0804e09c671c, type: 3}
 --- !u!1001 &1597843254
 Prefab:
   m_ObjectHideFlags: 0
@@ -753,7 +753,7 @@ Prefab:
     - target: {fileID: 224532775685930260, guid: bdb327e4c43098f4d88cd90342d3dffc,
         type: 2}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 224532775685930260, guid: bdb327e4c43098f4d88cd90342d3dffc,
         type: 2}
