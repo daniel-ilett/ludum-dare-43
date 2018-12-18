@@ -12,7 +12,7 @@ public class GameTimer : MonoBehaviour
 	[SerializeField]
 	private Text startTimeText;
 
-	private int _seconds = 60;
+	private int _seconds = 300;
 	private int Seconds
 	{
 		get

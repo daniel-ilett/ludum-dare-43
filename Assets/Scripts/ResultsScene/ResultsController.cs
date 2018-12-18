@@ -10,17 +10,9 @@ public class ResultsController : MonoBehaviour
 	private Image backgroundColour;
 
 	[SerializeField]
-	private Transform playerHolder;
+	private ResultsLayout playerLayout;
 
-	[SerializeField]
-	private ResultsLayout layoutEight;
-
-	[SerializeField]
-	private ResultsLayout layoutFour;
-
-	private ResultsLayout currentLayout;
-
-	private void Awake()
+	private void Start()
 	{
 		StartCoroutine(CountScores());
 	}
@@ -30,28 +22,45 @@ public class ResultsController : MonoBehaviour
 	{
 		var swordsUsed = PointTracker.instance.GetPointSwords();
 
-		// Enable the correct layout for the number of players.
-		if(swordsUsed.Count > 4)
-		{
-			layoutEight.gameObject.SetActive(true);
-			layoutFour.gameObject.SetActive(false);
+		int resultID = 0;
 
-			currentLayout = layoutEight;
-		}
-		else
-		{
-			layoutEight.gameObject.SetActive(false);
-			layoutFour.gameObject.SetActive(true);
-
-			currentLayout = layoutFour;
-		}
+		int rank = 0;
+		int rankIncrement = 1;
+		int lastMostSwords = 0;
 
 		// Assign points to the layout controller.
-		foreach(var playerID in swordsUsed.Keys)
+		while (swordsUsed.Count > 0)
 		{
-			currentLayout.SetPlayerStats(playerID, swordsUsed[playerID].Count);
-		}
+			int playerIDWithMost = -1;
+			int mostSwords = 0;
 
+			// Find the player with the most swords.
+			foreach (var playerID in swordsUsed.Keys)
+			{
+				if(swordsUsed[playerID].Count > mostSwords)
+				{
+					playerIDWithMost = playerID;
+					mostSwords = swordsUsed[playerID].Count;
+				}
+			}
+
+			if(mostSwords == lastMostSwords)
+			{
+				++rankIncrement;
+			}
+			else
+			{
+				rank += rankIncrement;
+				rankIncrement = 1;
+				lastMostSwords = mostSwords;
+			}
+
+			playerLayout.SetPlayerStats(resultID++, rank, playerIDWithMost, mostSwords);
+			swordsUsed.Remove(playerIDWithMost);
+
+			yield return null;
+		}
+		
 		yield return new WaitForSeconds(5.0f);
 		StartCoroutine(FadeOut());
 	}
