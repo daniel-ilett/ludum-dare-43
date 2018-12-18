@@ -11,6 +11,11 @@ A game about throwing more swords at a totally willing sacrifice than your oppon
   + Super Smash Bros. - Many of the menus, and the easy drop-in 8 player gameplay of the game, were heavily inspired by Smash.
 + It was originally started during Ludum Dare 43 but never submitted for the jam, hence the repository name.
 
+# Software
++ Unity (Game Engine) and Visual Studio used for most of development;
++ Affinity Designer used for most art/vector drawing;
++ Kenney's AssetForge and Blender used for Connection Screen swords.
+
 # Authors
 Created and developed by [Daniel Ilett](https://github.com/daniel-ilett).
 
