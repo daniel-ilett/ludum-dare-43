@@ -32,7 +32,7 @@ public class ResultsController : MonoBehaviour
 		while (swordsUsed.Count > 0)
 		{
 			int playerIDWithMost = -1;
-			int mostSwords = 0;
+			int mostSwords = -1;
 
 			// Find the player with the most swords.
 			foreach (var playerID in swordsUsed.Keys)

@@ -25,6 +25,18 @@ public class ResultsPlayer : MonoBehaviour
 
 	private RectTransform rectTransform;
 
+	private static Dictionary<int, string> rankNames = new Dictionary<int, string>
+	{
+		{ 1, "1st" },
+		{ 2, "2nd" },
+		{ 3, "3rd" },
+		{ 4, "4th" },
+		{ 5, "5th" },
+		{ 6, "6th" },
+		{ 7, "7th" },
+		{ 8, "8th" }
+	};
+
 	private void Awake()
 	{
 		rectTransform = GetComponent<RectTransform>();
@@ -33,7 +45,7 @@ public class ResultsPlayer : MonoBehaviour
 	// Set the rank, playerID, and sword count.
 	public void SetStats(int rank, int playerID, int points)
 	{
-		rankText.text = "#" + rank.ToString();
+		rankText.text = rankNames[rank];
 		playerIDText.text = "P" + playerID.ToString();
 		SetSwordCount(points);
 	}
